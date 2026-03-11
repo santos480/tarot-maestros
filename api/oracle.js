@@ -1,4 +1,4 @@
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).end();
     return;
@@ -18,4 +18,4 @@ module.exports = async function handler(req, res) {
   });
   const data = await response.json();
   res.status(response.status).json(data);
-};
+}
