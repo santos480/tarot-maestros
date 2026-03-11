@@ -5,6 +5,11 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    let body = req.body;
+    if (typeof body === 'string') {
+      body = JSON.parse(body);
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -12,7 +17,7 @@ module.exports = async function handler(req, res) {
         'anthropic-version': '2023-06-01',
         'x-api-key': process.env.ANTHROPIC_API_KEY,
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();
@@ -21,4 +26,3 @@ module.exports = async function handler(req, res) {
     res.status(500).json({ error: { message: err.message } });
   }
 };
-```
