@@ -35,7 +35,7 @@ const CARDS = [
   {id:8,a:'El Carro',n:'VII',m:'Padmasambhava',p:null,eje:'Voluntad espiritual que conquista los planos internos',i:'No evade las energías oscuras: las transforma.'},
   {id:9,a:'La Justicia',n:'VIII',m:'Adi Shankara',p:null,eje:'Discernimiento que recompone la unidad',i:'Señala lo permanente de lo transitorio.'},
   {id:10,a:'El Ermitaño',n:'IX',m:'Ramana Maharshi',p:null,eje:'Interiorización radical del conocimiento',i:'Retorno al núcleo del verdadero ser.'},
-  {id:11,a:'La Rueda',n:'X',m:'Heráclito',p:null,eje:'Flujo constante que gobierna la existencia',i:'El cambio como ley universal.'},
+  {id:11,a:'La Rueda de la Fortuna',n:'X',m:'Heráclito',p:null,eje:'Flujo constante que gobierna la existencia',i:'El cambio como ley universal.'},
   {id:12,a:'La Fuerza',n:'XI',m:'Juana de Arco',p:null,eje:'Dominio interior que convierte convicción en acción',i:'Firmeza interior que organiza la energía hacia lo esencial.'},
   {id:13,a:'El Colgado',n:'XII',m:'Sócrates',p:null,eje:'Suspensión que cuestiona las certezas',i:'No saber es el umbral del verdadero conocimiento.'},
   {id:14,a:'Arcano sin Nombre',n:'XIII',m:'Carlos Castaneda',p:null,eje:'Ruptura de la identidad ordinaria',i:'La conciencia ordinaria se fractura para dar paso a algo más vasto.'},
@@ -106,6 +106,12 @@ const CARDS = [
 ];
 
 const cfg = (p) => p ? PC[p] : { s:'✧', c:'#9b7fd4', b:'#100d1e' };
+const toMR = (n) => ({'IV':'IIII','IX':'VIIII','XIV':'XIIII','XIX':'XVIIII'})[n] || n;
+const arcanoLabel = (card, upper) => {
+  if (card.p) return upper ? card.p.toUpperCase() : card.p;
+  if (card.n === '0') return upper ? 'ARCANO MAYOR' : 'Arcano Mayor';
+  return upper ? `ARCANO ${toMR(card.n)}` : `Arcano ${toMR(card.n)}`;
+};
 
 function CardBack({ idx }) {
   return (
@@ -131,7 +137,7 @@ function CardFront({ card }) {
         <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}55,transparent)`,marginBottom:8}}/>
         <div style={{fontSize:13,lineHeight:1.3,color:'#e8dfc8',marginBottom:4}}>{card.a}</div>
         <div style={{fontSize:10,color:'#999',fontStyle:'italic',marginBottom:4}}>{card.m}</div>
-        <div style={{fontSize:8,letterSpacing:1.5,color:`${c.c}88`}}>{card.p ? card.p.toUpperCase() : 'ARCANO MAYOR'}</div>
+        <div style={{fontSize:8,letterSpacing:1.5,color:`${c.c}88`}}>{arcanoLabel(card, true)}</div>
       </div>
       <div>
         <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}33,transparent)`,marginBottom:7}}/>
@@ -318,9 +324,9 @@ export default function TarotMaestros() {
   const allRev = rev.every(Boolean);
 
   const callAPI = async (msg, attempt=1) => {
-    const res = await fetch('/api/oracle', {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SYS,messages:[{role:'user',content:msg}]})
     });
     const data = await res.json();
@@ -451,7 +457,7 @@ export default function TarotMaestros() {
                   <div style={{display:'flex',gap:20,flexWrap:'wrap'}}>
                     <div style={{minWidth:140,maxWidth:160,flexShrink:0}}>
                       <div style={{fontSize:8,letterSpacing:3,color:c.c,marginBottom:5}}>CARTA {i+1}</div>
-                      <div style={{fontSize:10,color:'#555',marginBottom:5}}>{c.s} {card.p || 'Arcano Mayor'}</div>
+                      <div style={{fontSize:10,color:'#555',marginBottom:5}}>{c.s} {arcanoLabel(card, false)}</div>
                       <div style={{fontSize:15,color:'#e8dfc8',marginBottom:3,lineHeight:1.3}}>{card.a}</div>
                       <div style={{fontSize:11,color:'#888',fontStyle:'italic',marginBottom:10}}>{card.m}</div>
                       <div style={{fontSize:9,lineHeight:1.5,color:c.c,padding:'8px 10px',border:`1px solid ${c.c}25`,borderRadius:6,background:`${c.c}0d`}}>{card.eje}</div>
