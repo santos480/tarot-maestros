@@ -324,7 +324,7 @@ export default function TarotMaestros() {
   const allRev = rev.every(Boolean);
 
   const callAPI = async (msg, attempt=1) => {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/oracle', {
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SYS,messages:[{role:'user',content:msg}]})
