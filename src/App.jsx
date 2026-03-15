@@ -21,7 +21,7 @@ ARCANOS MAYORES: etapas de la espiral de conciencia.
 
 ESTILO: contemplativo, cálido, preciso. No predices: describes. Empodera la autonomía. Responde en español.
 
-RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backticks:
+RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backticks. NUNCA uses comillas dobles dentro de los valores. Si necesitas citar usa comillas simples. Sin saltos de línea dentro de los valores. El JSON debe tener exactamente estas claves:
 {"carta1":"interpretación carta 1 en 2 párrafos cortos","carta2":"interpretación carta 2 en 2 párrafos cortos","carta3":"interpretación carta 3 en 2 párrafos cortos","sintesis":"3 párrafos que integran las 3 cartas respondiendo la pregunta"}`;
 
 const CARDS = [
