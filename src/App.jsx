@@ -327,7 +327,7 @@ export default function TarotMaestros() {
     const res = await fetch('/api/oracle', {
       method:'POST',
       headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SYS,messages:[{role:'user',content:msg}]})
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,system:SYS,messages:[{role:'user',content:msg}]})
     });
     const data = await res.json();
     if ((res.status===529||data?.error?.type==='overloaded_error') && attempt<=3) {
