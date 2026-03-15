@@ -347,7 +347,10 @@ export default function TarotMaestros() {
       const txt = data.content.map(c=>c.text||'').join('');
       const match = txt.match(/\{[\s\S]*\}/);
       if (!match) throw new Error(`Inesperado: "${txt.slice(0,120)}"`);
-      const parsed = JSON.parse(match[0]);
+      let jsonStr = match[0];
+      jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g,' ');
+      jsonStr = jsonStr.replace(/"([^"]*)":\s*"([^"]*)"/g, (m,k,v) => `"${k}":"${v.replace(/"/g,"'")}"`);
+      const parsed = JSON.parse(jsonStr);
       if (!parsed.carta1||!parsed.carta2||!parsed.carta3||!parsed.sintesis) throw new Error('Respuesta incompleta.');
       setReading(parsed); setPhase('result');
     } catch(e) {
