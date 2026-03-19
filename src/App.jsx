@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from './supabase';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
