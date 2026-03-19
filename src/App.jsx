@@ -327,8 +327,8 @@ export default function TarotMaestros() {
 
   const callAPI = async (msg, attempt=1) => {
     const res = await fetch('/api/oracle', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01'},
+      method:'POST',      headers:{'Content-Type':'application/json'},
+
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:5000,system:SYS,messages:[{role:'user',content:msg}]})
     });
     const data = await res.json();
