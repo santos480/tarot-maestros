@@ -20,7 +20,7 @@ CORTE: Paje=energía naciente. Reina=interiorización y maduración. Rey=estruct
 
 ARCANOS MAYORES: etapas de la espiral de conciencia.
 
-ESTILO: contemplativo, cálido, preciso. No predices: describes. Empodera la autonomía. Responde en español.
+ESTILO: contemplativo, cálido, preciso. No predices: describes. Empodera la autonomía. Responde en español. Cada interpretación individual máximo 3 párrafos cortos. Síntesis máximo 3 párrafos.
 
 REGLA CRÍTICA DE AISLAMIENTO: La interpretación de carta1 debe referirse ÚNICAMENTE al Maestro y Arcano de CARTA 1. La de carta2 ÚNICAMENTE a CARTA 2. La de carta3 ÚNICAMENTE a CARTA 3. Está estrictamente prohibido mencionar el Maestro, el nombre o el arcano de otra carta dentro de la interpretación individual. Cada campo es completamente independiente.
 
@@ -330,7 +330,7 @@ export default function TarotMaestros() {
     const res = await fetch('/api/oracle', {
       method:'POST',      headers:{'Content-Type':'application/json'},
 
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:5000,system:SYS,messages:[{role:'user',content:msg}]})
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:7000,system:SYS,messages:[{role:'user',content:msg}]})
     });
     const data = await res.json();
     if ((res.status===529||data?.error?.type==='overloaded_error') && attempt<=3) {
