@@ -28,28 +28,28 @@ RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backtick
 {"carta1":"interpretación carta 1 en 2 párrafos cortos","carta2":"interpretación carta 2 en 2 párrafos cortos","carta3":"interpretación carta 3 en 2 párrafos cortos","sintesis":"3 párrafos que integran las 3 cartas respondiendo la pregunta"}`;
 
 const CARDS = [
-  {id:1,a:'El Loco',n:'0',m:'Zhuangzi',p:null,eje:'Conciencia libre, previa a toda estructura',i:'Camina sin apegarse a ninguna idea. La sabiduría como vaciamiento.'},
-  {id:2,a:'El Mago',n:'I',m:'Leonardo da Vinci',p:null,eje:'Conciencia que se desliza entre la idea y la forma',i:'Integra arte y ciencia. La voluntad creadora que materializa lo invisible.'},
-  {id:3,a:'La Sacerdotisa',n:'II',m:'Hildegard von Bingen',p:null,eje:'Sabiduría interior que custodia la revelación',i:'Escucha antes de hablar. Saber nacido de revelación interior.'},
-  {id:4,a:'La Emperatriz',n:'III',m:'Hypatia',p:null,eje:'Inteligencia fecunda que genera cultura',i:'Da a luz ideas que estructuran el mundo. Irradiación intelectual.'},
-  {id:5,a:'El Emperador',n:'IV',m:'Confucio',p:null,eje:'Fortaleza que modela la convivencia humana',i:'La autoridad no domina: organiza. Funda estabilidad sin violencia.'},
-  {id:6,a:'El Sumo Sacerdote',n:'V',m:'Bodhidharma',p:null,eje:'Transmisión directa de la realización espiritual',i:'Tradición viva, no institución muerta.'},
-  {id:7,a:'Los Enamorados',n:'VI',m:'Rumi',p:null,eje:'Elección que une amor y conciencia',i:'Amar es elegir disolverse en lo esencial.'},
-  {id:8,a:'El Carro',n:'VII',m:'Padmasambhava',p:null,eje:'Voluntad espiritual que conquista los planos internos',i:'No evade las energías oscuras: las transforma.'},
-  {id:9,a:'La Justicia',n:'VIII',m:'Adi Shankara',p:null,eje:'Discernimiento que recompone la unidad',i:'Señala lo permanente de lo transitorio.'},
-  {id:10,a:'El Ermitaño',n:'IX',m:'Ramana Maharshi',p:null,eje:'Interiorización radical del conocimiento',i:'Retorno al núcleo del verdadero ser.'},
-  {id:11,a:'La Rueda de la Fortuna',n:'X',m:'Heráclito',p:null,eje:'Flujo constante que gobierna la existencia',i:'El cambio como ley universal.'},
-  {id:12,a:'La Fuerza',n:'XI',m:'Juana de Arco',p:null,eje:'Dominio interior que convierte convicción en acción',i:'Firmeza interior que organiza la energía hacia lo esencial.'},
-  {id:13,a:'El Colgado',n:'XII',m:'Sócrates',p:null,eje:'Suspensión que cuestiona las certezas',i:'No saber es el umbral del verdadero conocimiento.'},
-  {id:14,a:'Arcano sin Nombre',n:'XIII',m:'Carlos Castaneda',p:null,eje:'Ruptura de la identidad ordinaria',i:'La conciencia ordinaria se fractura para dar paso a algo más vasto.'},
-  {id:15,a:'La Templanza',n:'XIV',m:'Gautama Buddha',p:null,eje:'Equilibrio que integra extremos polarizantes',i:'Armoniza deseo y renuncia. Mezcla compasión y lucidez.'},
-  {id:16,a:'El Diablo',n:'XV',m:'George Gurdjieff',p:null,eje:'Confrontación con los mecanicismos internos',i:'Expone las fuerzas que esclavizan. Confronta la ilusión de libertad.'},
-  {id:17,a:'La Torre',n:'XVI',m:'Friedrich Nietzsche',p:null,eje:'Derrumbe de estructuras heredadas sin consciencia',i:'El colapso que libera espacio para una nueva afirmación de la vida.'},
-  {id:18,a:'La Estrella',n:'XVII',m:'Lao Tse',p:null,eje:'Esperanza serena que fluye con el Tao',i:'Orienta sin imponerse. La confianza en el flujo natural.'},
-  {id:19,a:'La Luna',n:'XVIII',m:'María Magdalena',p:null,eje:'Misterio sensorial y conocimiento velado',i:'Transita la noche sin perder vínculo con lo sagrado.'},
-  {id:20,a:'El Sol',n:'XIX',m:'Jesús de Nazareth',p:null,eje:'Conciencia luminosa que irradia amor',i:'Ilumina sin exclusión. Expande vida y devuelve dignidad.'},
-  {id:21,a:'El Juicio',n:'XX',m:'Mahatma Gandhi',p:null,eje:'Despertar colectivo de la conciencia ética',i:'Una conciencia que ya no puede dormir ante la inequidad.'},
-  {id:22,a:'El Mundo',n:'XXI',m:'Ibn Arabi',p:null,eje:'Unidad que integra todas las formas manifestadas',i:'Contempla la multiplicidad como expresión de una única realidad.'},
+{id:1,a:'El Loco',n:'0',m:'Zhuangzi',p:null,img:'/images/cards/arcano-00-el-loco.png',eje:'Conciencia libre, previa a toda estructura',i:'Camina sin apegarse a ninguna idea. La sabiduría como vaciamiento.'},
+{id:2,a:'El Mago',n:'I',m:'Leonardo da Vinci',p:null,img:'/images/cards/arcano-01-el-mago.png',eje:'Conciencia que se desliza entre la idea y la forma',i:'Integra arte y ciencia. La voluntad creadora que materializa lo invisible.'},
+{id:3,a:'La Sacerdotisa',n:'II',m:'Hildegard von Bingen',p:null,img:'/images/cards/arcano-02-la-sacerdotisa.png',eje:'Sabiduría interior que custodia la revelación',i:'Escucha antes de hablar. Saber nacido de revelación interior.'},
+{id:4,a:'La Emperatriz',n:'III',m:'Hypatia',p:null,img:'/images/cards/arcano-03-la-emperatriz.png',eje:'Inteligencia fecunda que genera cultura',i:'Da a luz ideas que estructuran el mundo. Irradiación intelectual.'},
+{id:5,a:'El Emperador',n:'IV',m:'Confucio',p:null,img:'/images/cards/arcano-04-el-emperador.png',eje:'Fortaleza que modela la convivencia humana',i:'La autoridad no domina: organiza. Funda estabilidad sin violencia.'},
+{id:6,a:'El Sumo Sacerdote',n:'V',m:'Bodhidharma',p:null,img:'/images/cards/arcano-05-el-sumo-sacerdote.png',eje:'Transmisión directa de la realización espiritual',i:'Tradición viva, no institución muerta.'},
+{id:7,a:'Los Enamorados',n:'VI',m:'Rumi',p:null,img:'/images/cards/arcano-06-los-enamorados.png',eje:'Elección que une amor y conciencia',i:'Amar es elegir disolverse en lo esencial.'},
+{id:8,a:'El Carro',n:'VII',m:'Padmasambhava',p:null,img:'/images/cards/arcano-07-el-carro.png',eje:'Voluntad espiritual que conquista los planos internos',i:'No evade las energías oscuras: las transforma.'},
+{id:9,a:'La Justicia',n:'VIII',m:'Adi Shankara',p:null,img:'/images/cards/arcano-08-la-justicia.png',eje:'Discernimiento que recompone la unidad',i:'Señala lo permanente de lo transitorio.'},
+{id:10,a:'El Ermitaño',n:'IX',m:'Ramana Maharshi',p:null,img:'/images/cards/arcano-09-el-ermitano.png',eje:'Interiorización radical del conocimiento',i:'Retorno al núcleo del verdadero ser.'},
+{id:11,a:'La Rueda de la Fortuna',n:'X',m:'Heráclito',p:null,img:'/images/cards/arcano-10-la-rueda.png',eje:'Flujo constante que gobierna la existencia',i:'El cambio como ley universal.'},
+{id:12,a:'La Fuerza',n:'XI',m:'Juana de Arco',p:null,img:'/images/cards/arcano-11-la-fuerza.png',eje:'Dominio interior que convierte convicción en acción',i:'Firmeza interior que organiza la energía hacia lo esencial.'},
+{id:13,a:'El Colgado',n:'XII',m:'Sócrates',p:null,img:'/images/cards/arcano-12-el-colgado.png',eje:'Suspensión que cuestiona las certezas',i:'No saber es el umbral del verdadero conocimiento.'},
+{id:14,a:'Arcano sin Nombre',n:'XIII',m:'Carlos Castaneda',p:null,img:'/images/cards/arcano-13-sin-nombre.png',eje:'Ruptura de la identidad ordinaria',i:'La conciencia ordinaria se fractura para dar paso a algo más vasto.'},
+{id:15,a:'La Templanza',n:'XIV',m:'Gautama Buddha',p:null,img:'/images/cards/arcano-14-la-templanza.png',eje:'Equilibrio que integra extremos polarizantes',i:'Armoniza deseo y renuncia. Mezcla compasión y lucidez.'},
+{id:16,a:'El Diablo',n:'XV',m:'George Gurdjieff',p:null,img:'/images/cards/arcano-15-el-diablo.png',eje:'Confrontación con los mecanicismos internos',i:'Expone las fuerzas que esclavizan. Confronta la ilusión de libertad.'},
+{id:17,a:'La Torre',n:'XVI',m:'Friedrich Nietzsche',p:null,img:'/images/cards/arcano-16-la-torre.png',eje:'Derrumbe de estructuras heredadas sin consciencia',i:'El colapso que libera espacio para una nueva afirmación de la vida.'},
+{id:18,a:'La Estrella',n:'XVII',m:'Lao Tse',p:null,img:'/images/cards/arcano-17-la-estrella.png',eje:'Esperanza serena que fluye con el Tao',i:'Orienta sin imponerse. La confianza en el flujo natural.'},
+{id:19,a:'La Luna',n:'XVIII',m:'María Magdalena',p:null,img:'/images/cards/arcano-18-la-luna.png',eje:'Misterio sensorial y conocimiento velado',i:'Transita la noche sin perder vínculo con lo sagrado.'},
+{id:20,a:'El Sol',n:'XIX',m:'Jesús de Nazareth',p:null,img:'/images/cards/arcano-19-el-sol.png',eje:'Conciencia luminosa que irradia amor',i:'Ilumina sin exclusión. Expande vida y devuelve dignidad.'},
+{id:21,a:'El Juicio',n:'XX',m:'Mahatma Gandhi',p:null,img:'/images/cards/arcano-20-el-juicio.png',eje:'Despertar colectivo de la conciencia ética',i:'Una conciencia que ya no puede dormir ante la inequidad.'},
+{id:22,a:'El Mundo',n:'XXI',m:'Ibn Arabi',p:null,img:'/images/cards/arcano-21-el-mundo.png',eje:'Unidad que integra todas las formas manifestadas',i:'Contempla la multiplicidad como expresión de una única realidad.'},
   {id:23,a:'As de Espadas',n:'As',m:'Albert Einstein',p:'Espadas',eje:'Chispa mental que inaugura paradigma',i:'Corte inaugural en la percepción. Intuición que atraviesa la apariencia.'},
   {id:24,a:'Dos de Espadas',n:'2',m:'Imhotep',p:'Espadas',eje:'La mente organiza la dualidad y la convierte en forma',i:'La tensión entre opuestos convertida en arquitectura viva.'},
   {id:25,a:'Tres de Espadas',n:'3',m:'Baruch Spinoza',p:'Espadas',eje:'Claridad racional que libera',i:'La lucidez que disuelve pasiones confusas.'},
@@ -130,22 +130,32 @@ function CardBack({ idx }) {
 function CardFront({ card }) {
   const c = cfg(card.p);
   return (
-    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',transform:'rotateY(180deg)',background:`linear-gradient(150deg,${c.b} 0%,#08080f 100%)`,border:`1px solid ${c.c}55`,borderRadius:12,padding:'14px 12px',boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between',overflow:'hidden'}}>
-      <div style={{position:'absolute',inset:6,border:`1px solid ${c.c}20`,borderRadius:8,pointerEvents:'none'}}/>
-      <div>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
-          <span style={{fontSize:14,color:c.c}}>{c.s}</span>
-          <span style={{fontSize:8,letterSpacing:1,color:`${c.c}99`}}>{card.n}</span>
+    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',transform:'rotateY(180deg)',background:`linear-gradient(150deg,${c.b} 0%,#08080f 100%)`,border:`1px solid ${c.c}55`,borderRadius:12,boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between',overflow:'hidden'}}>
+      {card.img ? (
+        <img
+          src={card.img}
+          alt={card.a}
+          style={{width:'100%',height:'100%',objectFit:'cover',borderRadius:11,display:'block'}}
+        />
+      ) : (
+        <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',justifyContent:'space-between',height:'100%',boxSizing:'border-box'}}>
+          <div style={{position:'absolute',inset:6,border:`1px solid ${c.c}20`,borderRadius:8,pointerEvents:'none'}}/>
+          <div>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:6}}>
+              <span style={{fontSize:14,color:c.c}}>{c.s}</span>
+              <span style={{fontSize:8,letterSpacing:1,color:`${c.c}99`}}>{card.n}</span>
+            </div>
+            <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}55,transparent)`,marginBottom:8}}/>
+            <div style={{fontSize:13,lineHeight:1.3,color:'#e8dfc8',marginBottom:4}}>{card.a}</div>
+            <div style={{fontSize:10,color:'#999',fontStyle:'italic',marginBottom:4}}>{card.m}</div>
+            <div style={{fontSize:8,letterSpacing:1.5,color:`${c.c}88`}}>{arcanoLabel(card, true)}</div>
+          </div>
+          <div>
+            <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}33,transparent)`,marginBottom:7}}/>
+            <div style={{fontSize:9,lineHeight:1.45,color:'#b8a888',fontStyle:'italic'}}>{card.eje}</div>
+          </div>
         </div>
-        <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}55,transparent)`,marginBottom:8}}/>
-        <div style={{fontSize:13,lineHeight:1.3,color:'#e8dfc8',marginBottom:4}}>{card.a}</div>
-        <div style={{fontSize:10,color:'#999',fontStyle:'italic',marginBottom:4}}>{card.m}</div>
-        <div style={{fontSize:8,letterSpacing:1.5,color:`${c.c}88`}}>{arcanoLabel(card, true)}</div>
-      </div>
-      <div>
-        <div style={{width:'100%',height:1,background:`linear-gradient(to right,${c.c}33,transparent)`,marginBottom:7}}/>
-        <div style={{fontSize:9,lineHeight:1.45,color:'#b8a888',fontStyle:'italic'}}>{card.eje}</div>
-      </div>
+      )}
     </div>
   );
 }
