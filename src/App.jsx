@@ -135,7 +135,7 @@ function CardFront({ card }) {
         <img
           src={card.img}
           alt={card.a}
-          style={{width:'100%',height:'100%',objectFit:'cover',borderRadius:11,display:'block'}}
+          style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:11,display:'block'}}
         />
       ) : (
         <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',justifyContent:'space-between',height:'100%',boxSizing:'border-box'}}>
