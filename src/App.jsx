@@ -355,23 +355,30 @@ export default function TarotMaestros() {
     setLoading(true); setPhase('loading'); setErr('');
     const nameStr = name.trim() ? `El nombre del consultante es: ${name.trim()}\n` : '';
     const msg = `${nameStr}Pregunta del consultante: "${q}"\n\n${deck.map((c,i)=>`CARTA ${i+1}: ${c.a} — ${c.m}\nEje arquetípico: ${c.eje}\nCampo: ${c.p||'Arcano Mayor'}\nNúmero: ${c.n}\nIntegración: ${c.i}`).join('\n\n')}`;
-    try {
-      const data = await callAPI(msg);
-      const txt = data.content.map(c=>c.text||'').join('');
-      const match = txt.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error(`Inesperado: "${txt.slice(0,120)}"`);
-      let jsonStr = match[0];
-      jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g,' ');
-      jsonStr = jsonStr.replace(/"([^"]*)":\s*"([^"]*)"/g, (m,k,v) => `"${k}":"${v.replace(/"/g,"'")}"`);
-      const parsed = JSON.parse(jsonStr);
-      if (!parsed.carta1||!parsed.carta2||!parsed.carta3||!parsed.sintesis) throw new Error('Respuesta incompleta.');
-      setReading(parsed); setPhase('result');
-    } catch(e) {
-      console.error(e);
-      setErr(`El oráculo no pudo responder: ${e.message}`);
-      setPhase('reveal');
-    } finally { setLoading(false); }
-  };
+  try {
+  const data = await callAPI(msg);
+  const txt = data.content.map(c=>c.text||'').join('');
+  const match = txt.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error(`Inesperado: "${txt.slice(0,120)}"`);
+  let jsonStr = match[0];
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch(e1) {
+    jsonStr = jsonStr
+      .replace(/[\x00-\x1F\x7F]/g,' ')
+      .replace(/\n/g,' ')
+      .replace(/\r/g,' ');
+    parsed = JSON.parse(jsonStr);
+  }
+  if (!parsed.carta1||!parsed.carta2||!parsed.carta3||!parsed.sintesis) throw new Error('Respuesta incompleta.');
+  setReading(parsed); setPhase('result');
+} catch(e) {
+  console.error(e);
+  setErr(`El oráculo no pudo responder: ${e.message}`);
+  setPhase('reveal');
+} finally { setLoading(false); }
+};
 
   const reset = () => { setPhase('question'); setQ(''); setName(''); setDeck([]); setRev([false,false,false]); setReading(null); setErr(''); setShowPrint(false); };
 
