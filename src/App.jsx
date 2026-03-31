@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from './supabase';
+import TiradaCruz from './TiradaCruz';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -326,6 +327,8 @@ export default function TarotMaestros() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState('');
   const [showPrint, setShowPrint] = useState(false);
+  const [tiradaActiva, setTiradaActiva] = useState('tres');
+if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
 
   const start = () => {
     if (!q.trim()) return;
@@ -405,6 +408,16 @@ export default function TarotMaestros() {
         <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:10,opacity:.7}}>✦ ✦ ✦</div>
         <h1 style={{margin:0,fontSize:22,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
         <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
+        <div style={{marginTop:12,display:'flex',gap:8,justifyContent:'center'}}>
+  <button onClick={()=>setTiradaActiva('tres')}
+    style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+    3 CARTAS
+  </button>
+  <button onClick={()=>setTiradaActiva('cruz')}
+    style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+    TIRADA EN CRUZ ✦
+  </button>
+</div>
       </header>
 
       <main style={{maxWidth:820,margin:'0 auto',padding:'40px 20px 60px'}}>
