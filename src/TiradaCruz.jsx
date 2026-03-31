@@ -319,7 +319,7 @@ export default function TiradaCruz({ onBack }) {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:8500,
+        max_tokens:16000,
         system:SYS_CRUZ,
         messages:[{role:'user',content:msg}]
       })
