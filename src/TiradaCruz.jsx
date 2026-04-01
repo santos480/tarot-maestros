@@ -508,8 +508,9 @@ export default function TiradaCruz({ onBack }) {
 
             {/* interpretaciones en orden de lectura:
                 esencia primero, luego corriente/horizonte (eje horizontal),
-                luego conciencia/sombra (eje vertical) */}
-            {POSITIONS.map((pos, i) => {
+                luego sombra/conciencia (eje vertical — sombra primero) */}
+            {[0,1,2,4,3].map((i) => {
+  const pos = POSITIONS[i];
               const card = deck[i];
               const c = cfg(card.p);
               return (
