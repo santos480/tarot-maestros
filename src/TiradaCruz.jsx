@@ -27,9 +27,9 @@ CARTA IZQUIERDA — LA CORRIENTE: Factor externo que ya está en marcha. El cons
 
 CARTA DERECHA — EL HORIZONTE: Lo que probablemente se avecina. Aún no ha ocurrido pero es la dirección probable de los eventos. Las acciones del consultante pueden influir en esto. También del plano horizontal: externo y temporal. Interprétala a través de La Esencia.
 
-CARTA SUPERIOR — LA CONCIENCIA: Lo que está activo en la mente consciente del consultante. Lo que puede ser contemplado, elegido y utilizado intencionalmente. Es una herramienta disponible. Del plano vertical: interno. Interprétala en relación con La Esencia, no secuencialmente con La Sombra.
+CARTA INFERIOR — LA SOMBRA: Lo que opera desde debajo de la superficie: impulsos profundos, emociones no procesadas, sombra. El consultante necesita reconocerlo para adaptarse conscientemente. También del plano vertical: interno. Coexiste simultáneamente con La Conciencia, no es secuencial a ella. Léela antes que La Conciencia para no dejar al final lo que puede ser más difícil de asimilar.
 
-CARTA INFERIOR — LA SOMBRA: Lo que opera desde debajo de la superficie: impulsos profundos, emociones no procesadas, sombra. El consultante necesita reconocerlo para adaptarse conscientemente. También del plano vertical: interno. Coexiste simultáneamente con La Conciencia, no es secuencial a ella.
+CARTA SUPERIOR — LA CONCIENCIA: Lo que está activo en la mente consciente del consultante. Permite concentrarse y reflexionar intencionalmente. Es una herramienta disponible. Del plano vertical: interno. Interprétala en relación con La Esencia, no secuencialmente con La Sombra. Léela después de La Sombra como recurso integrador.
 
 SÍNTESIS (4-5 párrafos): Integra las 5 cartas respondiendo la pregunta del consultante con profundidad. Considera: (1) la atmósfera general y el tono de la tirada; (2) patrones elementales: ¿qué palo predomina?; (3) patrones numéricos: números bajos indican comienzos, altos indican ajustes finales; (4) la dirección de La Esencia y lo que revela sobre la actitud del consultante; (5) el eje horizontal como trayectoria de eventos externos, el eje vertical como profundidad interna. Concluye siempre volviendo a La Esencia y a la pregunta original.
 
