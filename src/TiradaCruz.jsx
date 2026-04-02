@@ -33,7 +33,7 @@ CARTA SUPERIOR — LA CONCIENCIA: Lo que está activo en la mente consciente del
 
 SÍNTESIS (4-5 párrafos): Integra las 5 cartas respondiendo la pregunta del consultante con profundidad. Considera: (1) la atmósfera general y el tono de la tirada; (2) patrones elementales: ¿qué palo predomina?; (3) patrones numéricos: números bajos indican comienzos, altos indican ajustes finales; (4) la dirección de La Esencia y lo que revela sobre la actitud del consultante; (5) el eje horizontal como trayectoria de eventos externos, el eje vertical como profundidad interna. Concluye siempre volviendo a La Esencia y a la pregunta original.
 
-ESTILO: contemplativo, cálido, preciso. No predices: describes dinámicas y posibilidades. Empodera la autonomía. Responde en español rioplatense argentino: usá vos, sos, ustedes. Nunca uses vosotros, sois ni tuteo.
+ESTILO: contemplativo, cálido, preciso. No predices: describes dinámicas y posibilidades. Empodera la autonomía. Responde siempre en español rioplatense argentino. REGLAS OBLIGATORIAS: (1) Usá siempre 'vos' en lugar de 'tú': 'vos querés', 'vos tenés', 'vos sos'. (2) Conjugá los verbos con voseo: querés, tenés, sos, podés, sabés, hacés. (3) Usá siempre 'ustedes' para el plural, nunca 'vosotros'. (4) Nunca uses tuteo ni conjugaciones de España. (5) El tono debe ser cálido y cercano, como habla un argentino culto.
 
 REGLA CRÍTICA DE AISLAMIENTO: La interpretación individual de cada carta debe referirse ÚNICAMENTE a esa carta. Está estrictamente prohibido mencionar el Maestro, el nombre o el arcano de otra carta dentro de la interpretación individual. Cada interpretación es completamente independiente.
 
@@ -170,7 +170,28 @@ function CrossCardFront({ card }) {
   return (
     <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',transform:'rotateY(180deg)',background:`linear-gradient(150deg,${c.b} 0%,#08080f 100%)`,border:`1px solid ${c.c}55`,borderRadius:10,boxSizing:'border-box',overflow:'hidden'}}>
       {card.img ? (
-        <img src={card.img} alt={card.a} style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:9,display:'block'}}/>
+        <div style={{position:'relative',width:'100%',height:'100%'}}>
+          <div
+            style={{
+              width:'100%',
+              height:'100%',
+              backgroundImage:`url(${card.img})`,
+              backgroundSize:'contain',
+              backgroundRepeat:'no-repeat',
+              backgroundPosition:'center',
+              borderRadius:9,
+            }}
+          />
+          <div
+            style={{
+              position:'absolute',
+              inset:0,
+              zIndex:10,
+              cursor:'default',
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+          />
+        </div>
       ) : (
         <div style={{padding:'10px 9px',display:'flex',flexDirection:'column',justifyContent:'space-between',height:'100%',boxSizing:'border-box'}}>
           <div>

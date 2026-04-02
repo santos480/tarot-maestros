@@ -140,11 +140,28 @@ function CardFront({ card }) {
   return (
     <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',transform:'rotateY(180deg)',background:`linear-gradient(150deg,${c.b} 0%,#08080f 100%)`,border:`1px solid ${c.c}55`,borderRadius:12,boxSizing:'border-box',display:'flex',flexDirection:'column',justifyContent:'space-between',overflow:'hidden'}}>
       {card.img ? (
-        <img
-          src={card.img}
-          alt={card.a}
-          style={{width:'100%',height:'100%',objectFit:'contain',borderRadius:11,display:'block'}}
-        />
+        <div style={{position:'relative',width:'100%',height:'100%'}}>
+          <div
+            style={{
+              width:'100%',
+              height:'100%',
+              backgroundImage:`url(${card.img})`,
+              backgroundSize:'contain',
+              backgroundRepeat:'no-repeat',
+              backgroundPosition:'center',
+              borderRadius:11,
+            }}
+          />
+          <div
+            style={{
+              position:'absolute',
+              inset:0,
+              zIndex:10,
+              cursor:'default',
+            }}
+            onContextMenu={(e) => e.preventDefault()}
+          />
+        </div>
       ) : (
         <div style={{padding:'14px 12px',display:'flex',flexDirection:'column',justifyContent:'space-between',height:'100%',boxSizing:'border-box'}}>
           <div style={{position:'absolute',inset:6,border:`1px solid ${c.c}20`,borderRadius:8,pointerEvents:'none'}}/>
