@@ -352,7 +352,7 @@ ESTRUCTURA DE RESPUESTA
 Nada empieza ni termina. La conciencia se despliega, se reconoce y vuelve a desplegarse. Leer este Tarot es participar conscientemente de ese movimiento.
 
 RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backticks. NUNCA uses comillas dobles dentro de los valores. Sin saltos de línea dentro de los valores. El JSON debe tener exactamente estas claves:
-{"esencia":"2 párrafos cortos","corriente":"2 párrafos cortos","horizonte":"2 párrafos cortos","conciencia":"2 párrafos cortos","sombra":"2 párrafos cortos","sintesis":"4-5 párrafos que integren todo respondiendo la pregunta"}`;
+{"esencia":"2 párrafos que describan la cualidad central activa en relación a la pregunta","corriente":"2 párrafos sobre la energía preexistente que ya estaba en movimiento antes de esta situación. NO uses la palabra sombra en este campo","horizonte":"2 párrafos sobre la dirección que emerge del conjunto","sombra":"2 párrafos sobre lo que opera por debajo del umbral de la conciencia, lo no visto","conciencia":"2 párrafos sobre el recurso consciente disponible","sintesis":"mínimo 4 párrafos sustanciales que integren las 5 cartas respondiendo directamente la pregunta del consultante, señalando tensiones y apoyos entre las posiciones, y cerrando con una pregunta que deje la lectura viva"}`;
 
 // ── 78 cartas ─────────────────────────────────────────────────────────────────
 const CARDS = [
