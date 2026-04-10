@@ -351,9 +351,8 @@ ESTRUCTURA DE RESPUESTA
  
 Nada empieza ni termina. La conciencia se despliega, se reconoce y vuelve a desplegarse. Leer este Tarot es participar conscientemente de ese movimiento.
 
-RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backticks. NUNCA uses comillas dobles dentro de los valores. Sin saltos de línea dentro de los valores. El JSON debe tener exactamente estas claves:
-{"esencia":"2 párrafos que describan la cualidad central activa en relación a la pregunta","corriente":"2 párrafos sobre la energía preexistente que ya estaba en movimiento antes de esta situación. NO uses la palabra sombra en este campo","horizonte":"2 párrafos sobre la dirección que emerge del conjunto","sombra":"2 párrafos sobre lo que opera por debajo del umbral de la conciencia, lo no visto","conciencia":"2 párrafos sobre el recurso consciente disponible","sintesis":"mínimo 4 párrafos sustanciales que integren las 5 cartas respondiendo directamente la pregunta del consultante, señalando tensiones y apoyos entre las posiciones, y cerrando con una pregunta que deje la lectura viva"}`;
-
+RESPONDE ÚNICAMENTE con JSON válido, sin texto antes ni después, sin backticks. NUNCA uses comillas dobles dentro de los valores. Sin saltos de línea dentro de los valores. Hablá siempre directamente al consultante en segunda persona usando vos, sos, tenés. Nunca en tercera persona. Nunca digas su nombre como si hablaras de él a otro: dirigite siempre a él o ella. Usá lenguaje inclusivo o neutro en adjetivos referidos al consultante, evitando asumir género. El JSON debe tener exactamente estas claves:
+{"esencia":"2 párrafos cortos de no más de 3 oraciones cada uno, dirigidos directamente al consultante en segunda persona, describiendo la cualidad central activa en relación a la pregunta","corriente":"2 párrafos cortos de no más de 3 oraciones cada uno, dirigidos directamente al consultante en segunda persona, sobre la energía preexistente que ya estaba en movimiento. NO uses la palabra sombra en este campo","horizonte":"2 párrafos cortos de no más de 3 oraciones cada uno, dirigidos directamente al consultante en segunda persona, sobre la dirección que emerge del conjunto","sombra":"2 párrafos cortos de no más de 3 oraciones cada uno, dirigidos directamente al consultante en segunda persona, sobre lo que opera por debajo del umbral de la conciencia","conciencia":"2 párrafos cortos de no más de 3 oraciones cada uno, dirigidos directamente al consultante en segunda persona, sobre el recurso consciente disponible","sintesis":"Mínimo 4 párrafos sustanciales dirigidos directamente al consultante en segunda persona usando vos. Usá su nombre solo al inicio del primer párrafo. Integrá las 5 cartas respondiendo directamente la pregunta, señalando tensiones y apoyos entre las posiciones. Cerrá con una pregunta que deje la lectura viva"}`;
 // ── 78 cartas ─────────────────────────────────────────────────────────────────
 const CARDS = [
   {id:1,a:'El Loco',n:'0',m:'Zhuangzi',p:null,img:'/images/cards/arcano-00-el-loco.png',eje:'Conciencia libre, previa a toda estructura',i:'Camina sin apegarse a ninguna idea. La sabiduría como vaciamiento.'},
@@ -696,13 +695,25 @@ export default function TiradaCruz({ onBack }) {
       const match = txt.match(/\{[\s\S]*\}/);
       if (!match) throw new Error(`Respuesta inesperada: "${txt.slice(0,120)}"`);
       let jsonStr = match[0];
-      let parsed;
-      try {
-        parsed = JSON.parse(jsonStr);
-      } catch {
-        jsonStr = jsonStr.replace(/[\x00-\x1F\x7F]/g,' ').replace(/\n/g,' ').replace(/\r/g,' ');
-        parsed = JSON.parse(jsonStr);
-      }
+let parsed;
+try {
+  parsed = JSON.parse(jsonStr);
+} catch {
+  jsonStr = jsonStr
+    .replace(/[\x00-\x1F\x7F]/g, ' ')
+    .replace(/\r?\n/g, ' ')
+    .replace(/([{,]\s*"[^"]+"\s*:\s*)"((?:[^"\\]|\\.|"(?![,}]))*?)"/g, (_, prefix, val) => {
+      return prefix + '"' + val.replace(/"/g, "'") + '"';
+    });
+  try {
+    parsed = JSON.parse(jsonStr);
+  } catch {
+    jsonStr = jsonStr.replace(/":\s*"([^"]*(?:"[^,}][^"]*)*?)"/g, (match, val) => {
+      return '": "' + val.replace(/"/g, "'") + '"';
+    });
+    parsed = JSON.parse(jsonStr);
+  }
+}
       const required = ['esencia','corriente','horizonte','conciencia','sombra','sintesis'];
       if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta del oráculo.');
       setReading(parsed);
