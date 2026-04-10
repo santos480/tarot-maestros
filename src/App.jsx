@@ -738,38 +738,51 @@ if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('t
     setLoading(true); setPhase('loading'); setErr('');
     const nameStr = name.trim() ? `El nombre del consultante es: ${name.trim()}\n` : '';
     const msg = `${nameStr}Pregunta del consultante: "${q}"\n\n${deck.map((c,i)=>`CARTA ${i+1}: ${c.a} — ${c.m}\nEje arquetípico: ${c.eje}\nCampo: ${c.p||'Arcano Mayor'}\nNúmero: ${c.n}\nIntegración: ${c.i}`).join('\n\n')}`;
-  try {
-  const data = await callAPI(msg);
-  const txt = data.content.map(c=>c.text||'').join('');
+const tryParse = (txt) => {
   const match = txt.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error(`Inesperado: "${txt.slice(0,120)}"`);
+  if (!match) throw new Error('sin JSON');
   let jsonStr = match[0];
-let parsed;
-try {
-  parsed = JSON.parse(jsonStr);
-} catch {
+  try { return JSON.parse(jsonStr); } catch {}
   jsonStr = jsonStr
     .replace(/[\x00-\x1F\x7F]/g, ' ')
     .replace(/\r?\n/g, ' ')
     .replace(/([{,]\s*"[^"]+"\s*:\s*)"((?:[^"\\]|\\.|"(?![,}]))*?)"/g, (_, prefix, val) => {
       return prefix + '"' + val.replace(/"/g, "'") + '"';
     });
+  try { return JSON.parse(jsonStr); } catch {}
+  jsonStr = jsonStr.replace(/":\s*"([^"]*(?:"[^,}][^"]*)*?)"/g, (_, val) => {
+    return '": "' + val.replace(/"/g, "'") + '"';
+  });
+  return JSON.parse(jsonStr);
+};
+
+const required = ['carta1','carta2','carta3','sintesis'];
+
+let parsed = null;
+let lastError = null;
+
+for (let intento = 1; intento <= 2; intento++) {
   try {
-    parsed = JSON.parse(jsonStr);
-  } catch {
-    jsonStr = jsonStr.replace(/":\s*"([^"]*(?:"[^,}][^"]*)*?)"/g, (match, val) => {
-      return '": "' + val.replace(/"/g, "'") + '"';
-    });
-    parsed = JSON.parse(jsonStr);
+    const data = await callAPI(msg);
+    const txt = data.content.map(c=>c.text||'').join('');
+    parsed = tryParse(txt);
+    if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta.');
+    break;
+  } catch(e) {
+    lastError = e;
+    console.error(`Intento ${intento} fallido:`, e);
+    if (intento < 2) await new Promise(r => setTimeout(r, 1500));
   }
 }
-  if (!parsed.carta1||!parsed.carta2||!parsed.carta3||!parsed.sintesis) throw new Error('Respuesta incompleta.');
-  setReading(parsed); setPhase('result');
-} catch(e) {
-  console.error(e);
-  setErr(`El oráculo no pudo responder: ${e.message}`);
+
+if (parsed) {
+  setReading(parsed);
+  setPhase('result');
+} else {
+  setErr('El oráculo no pudo completar la lectura. Volvé a consultarlo.');
   setPhase('reveal');
-} finally { setLoading(false); }
+}
+setLoading(false);
 };
 
   const reset = () => { setPhase('question'); setQ(''); setName(''); setDeck([]); setRev([false,false,false]); setReading(null); setErr(''); setShowPrint(false); };

@@ -689,43 +689,52 @@ export default function TiradaCruz({ onBack }) {
         `${posNames[i]}: ${c.a} — ${c.m}\nEje arquetípico: ${c.eje}\nCampo: ${c.p||'Arcano Mayor'}\nNúmero: ${c.n}\nIntegración: ${c.i}`
       ).join('\n\n')
     }`;
-    try {
-      const data = await callAPI(msg);
-      const txt = data.content.map(c=>c.text||'').join('');
-      const match = txt.match(/\{[\s\S]*\}/);
-      if (!match) throw new Error(`Respuesta inesperada: "${txt.slice(0,120)}"`);
-      let jsonStr = match[0];
-let parsed;
-try {
-  parsed = JSON.parse(jsonStr);
-} catch {
+   const tryParse = (txt) => {
+  const match = txt.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('sin JSON');
+  let jsonStr = match[0];
+  try { return JSON.parse(jsonStr); } catch {}
   jsonStr = jsonStr
     .replace(/[\x00-\x1F\x7F]/g, ' ')
     .replace(/\r?\n/g, ' ')
     .replace(/([{,]\s*"[^"]+"\s*:\s*)"((?:[^"\\]|\\.|"(?![,}]))*?)"/g, (_, prefix, val) => {
       return prefix + '"' + val.replace(/"/g, "'") + '"';
     });
+  try { return JSON.parse(jsonStr); } catch {}
+  jsonStr = jsonStr.replace(/":\s*"([^"]*(?:"[^,}][^"]*)*?)"/g, (_, val) => {
+    return '": "' + val.replace(/"/g, "'") + '"';
+  });
+  return JSON.parse(jsonStr);
+};
+
+const required = ['esencia','corriente','horizonte','conciencia','sombra','sintesis'];
+
+let parsed = null;
+let lastError = null;
+
+for (let intento = 1; intento <= 2; intento++) {
   try {
-    parsed = JSON.parse(jsonStr);
-  } catch {
-    jsonStr = jsonStr.replace(/":\s*"([^"]*(?:"[^,}][^"]*)*?)"/g, (match, val) => {
-      return '": "' + val.replace(/"/g, "'") + '"';
-    });
-    parsed = JSON.parse(jsonStr);
+    const data = await callAPI(msg);
+    const txt = data.content.map(c=>c.text||'').join('');
+    parsed = tryParse(txt);
+    if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta del oráculo.');
+    break;
+  } catch(e) {
+    lastError = e;
+    console.error(`Intento ${intento} fallido:`, e);
+    if (intento < 2) await new Promise(r => setTimeout(r, 1500));
   }
 }
-      const required = ['esencia','corriente','horizonte','conciencia','sombra','sintesis'];
-      if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta del oráculo.');
-      setReading(parsed);
-      setPhase('result');
-    } catch(e) {
-      console.error(e);
-      setErr(`El oráculo no pudo responder: ${e.message}`);
-      setPhase('reveal');
-    } finally {
-      setLoading(false);
-    }
-  };
+
+if (parsed) {
+  setReading(parsed);
+  setPhase('result');
+} else {
+  setErr('El oráculo no pudo completar la lectura. Volvé a consultarlo.');
+  setPhase('reveal');
+}
+setLoading(false);
+};
 
   const reset = () => {
     setPhase('question'); setQ(''); setName(''); setDeck([]);
