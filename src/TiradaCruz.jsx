@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from './supabase';
 
 // ── paleta por palo ───────────────────────────────────────────────────────────
 const PC = {
@@ -636,6 +637,15 @@ export default function TiradaCruz({ onBack }) {
   const [reading, setReading] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr]         = useState('');
+  const [creditos, setCreditos] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      supabase.from('usuarios').select('creditos').eq('id', session.user.id).single()
+        .then(({ data }) => { if (data) setCreditos(data.creditos); });
+    });
+  }, []);
 
   const start = () => {
     if (!q.trim()) return;
@@ -655,9 +665,10 @@ export default function TiradaCruz({ onBack }) {
   const allRev = rev.every(Boolean);
 
   const callAPI = async (msg, attempt=1) => {
+    const { data: { session } } = await supabase.auth.getSession();
     const res = await fetch('/api/oracle-cruz', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:16000,
@@ -665,7 +676,16 @@ export default function TiradaCruz({ onBack }) {
         messages:[{role:'user',content:msg}]
       })
     });
+    if (res.status === 401) throw new Error('Sesión expirada. Recargá la página.');
+    if (res.status === 402) {
+      const d = await res.json();
+      throw new Error(d.error === 'creditos_vencidos'
+        ? 'Tus créditos vencieron. Escribinos para recargar.'
+        : 'No te quedan créditos disponibles. Escribinos para recargar.');
+    }
     const data = await res.json();
+    const rem = res.headers.get('X-Credits-Remaining');
+    if (rem !== null) setCreditos(parseInt(rem, 10));
     if ((res.status===529 || data?.error?.type==='overloaded_error') && attempt<=3) {
       await new Promise(r=>setTimeout(r,2000*attempt));
       return callAPI(msg, attempt+1);
@@ -722,6 +742,7 @@ for (let intento = 1; intento <= 2; intento++) {
   } catch(e) {
     lastError = e;
     console.error(`Intento ${intento} fallido:`, e);
+    if (e.message.includes('crédito') || e.message.includes('Sesión')) break;
     if (intento < 2) await new Promise(r => setTimeout(r, 1500));
   }
 }
@@ -730,7 +751,7 @@ if (parsed) {
   setReading(parsed);
   setPhase('result');
 } else {
-  setErr('El oráculo no pudo completar la lectura. Volvé a consultarlo.');
+  setErr(lastError?.message || 'El oráculo no pudo completar la lectura. Volvé a consultarlo.');
   setPhase('reveal');
 }
 setLoading(false);
@@ -765,6 +786,13 @@ setLoading(false);
             onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.3)'}>
             ← TIRADA DE 3
           </button>
+        )}
+        {creditos !== null && (
+          <div style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)'}}>
+            <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
+              ✦ {creditos} crédito{creditos!==1?'s':''}
+            </span>
+          </div>
         )}
         <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:8,opacity:.7}}>✦ ✦ ✦</div>
         <h1 style={{margin:0,fontSize:20,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>

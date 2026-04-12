@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
+import AuthScreen from './AuthScreen';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -708,7 +709,31 @@ export default function TarotMaestros() {
   const [err, setErr] = useState('');
   const [showPrint, setShowPrint] = useState(false);
   const [tiradaActiva, setTiradaActiva] = useState('tres');
-if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
+  const [session, setSession] = useState(null);
+  const [creditos, setCreditos] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setAuthReady(true);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+      if (!s) setCreditos(null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (!session) return;
+    supabase.from('usuarios').select('creditos_restantes').eq('id', session.user.id).single()
+      .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
+  }, [session]);
+
+  if (!authReady) return null;
+  if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
+  if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
 
   const start = () => {
     if (!q.trim()) return;
@@ -720,12 +745,22 @@ if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('t
   const allRev = rev.every(Boolean);
 
   const callAPI = async (msg, attempt=1) => {
+    const { data: { session: s } } = await supabase.auth.getSession();
     const res = await fetch('/api/oracle', {
-      method:'POST',      headers:{'Content-Type':'application/json'},
-
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${s.access_token}`},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8500,system:SYS,messages:[{role:'user',content:msg}]})
     });
+    if (res.status === 401) throw new Error('Sesión expirada. Recargá la página.');
+    if (res.status === 402) {
+      const d = await res.json();
+      throw new Error(d.error === 'creditos_vencidos'
+        ? 'Tus créditos vencieron. Escribinos para recargar.'
+        : 'No te quedan créditos disponibles. Escribinos para recargar.');
+    }
     const data = await res.json();
+    const rem = res.headers.get('X-Credits-Remaining');
+    if (rem !== null) setCreditos(parseInt(rem, 10));
     if ((res.status===529||data?.error?.type==='overloaded_error') && attempt<=3) {
       await new Promise(r=>setTimeout(r,2000*attempt));
       return callAPI(msg, attempt+1);
@@ -771,6 +806,7 @@ for (let intento = 1; intento <= 2; intento++) {
   } catch(e) {
     lastError = e;
     console.error(`Intento ${intento} fallido:`, e);
+    if (e.message.includes('crédito') || e.message.includes('Sesión')) break;
     if (intento < 2) await new Promise(r => setTimeout(r, 1500));
   }
 }
@@ -779,7 +815,7 @@ if (parsed) {
   setReading(parsed);
   setPhase('result');
 } else {
-  setErr('El oráculo no pudo completar la lectura. Volvé a consultarlo.');
+  setErr(lastError?.message || 'El oráculo no pudo completar la lectura. Volvé a consultarlo.');
   setPhase('reveal');
 }
 setLoading(false);
@@ -806,7 +842,20 @@ setLoading(false);
         <PrintOverlay deck={deck} reading={reading} name={name} q={q} onClose={()=>setShowPrint(false)}/>
       )}
 
-      <header style={{textAlign:'center',padding:'32px 20px 24px',borderBottom:'1px solid rgba(201,168,76,.15)'}}>
+      <header style={{textAlign:'center',padding:'32px 20px 24px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
+        <div style={{position:'absolute',right:16,top:16,display:'flex',alignItems:'center',gap:12}}>
+          {creditos !== null && (
+            <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
+              ✦ {creditos} crédito{creditos!==1?'s':''}
+            </span>
+          )}
+          <button onClick={()=>supabase.auth.signOut()}
+            style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
+            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
+            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
+            SALIR
+          </button>
+        </div>
         <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:10,opacity:.7}}>✦ ✦ ✦</div>
         <h1 style={{margin:0,fontSize:22,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
         <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
