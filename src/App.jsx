@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
 import AuthScreen from './AuthScreen';
+import HistorialDrawer from './HistorialDrawer';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -712,6 +713,7 @@ export default function TarotMaestros() {
   const [session, setSession] = useState(null);
   const [creditos, setCreditos] = useState(null);
   const [authReady, setAuthReady] = useState(false);
+  const [showHistorial, setShowHistorial] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -855,6 +857,12 @@ setLoading(false);
               ✦ {creditos} crédito{creditos!==1?'s':''}
             </span>
           )}
+          <button onClick={()=>setShowHistorial(true)}
+            style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
+            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
+            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
+            LECTURAS
+          </button>
           <button onClick={()=>supabase.auth.signOut()}
             style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
             onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
@@ -876,6 +884,8 @@ setLoading(false);
   </button>
 </div>
       </header>
+
+      {showHistorial && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
 
       <main style={{maxWidth:820,margin:'0 auto',padding:'40px 20px 60px'}}>
 
