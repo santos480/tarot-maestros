@@ -664,17 +664,12 @@ export default function TiradaCruz({ onBack }) {
 
   const allRev = rev.every(Boolean);
 
-  const callAPI = async (msg, attempt=1) => {
+  const callAPI = async (body, attempt=1) => {
     const { data: { session } } = await supabase.auth.getSession();
     const res = await fetch('/api/oracle-cruz', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${session.access_token}`},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:16000,
-        system:SYS_CRUZ,
-        messages:[{role:'user',content:msg}]
-      })
+      body:JSON.stringify(body)
     });
     if (res.status === 401) throw new Error('Sesión expirada. Recargá la página.');
     if (res.status === 402) {
@@ -688,7 +683,7 @@ export default function TiradaCruz({ onBack }) {
     if (rem !== null) setCreditos(parseInt(rem, 10));
     if ((res.status===529 || data?.error?.type==='overloaded_error') && attempt<=3) {
       await new Promise(r=>setTimeout(r,2000*attempt));
-      return callAPI(msg, attempt+1);
+      return callAPI(body, attempt+1);
     }
     if (!res.ok || data.type==='error') throw new Error(data?.error?.message||`HTTP ${res.status}`);
     return data;
@@ -709,6 +704,12 @@ export default function TiradaCruz({ onBack }) {
         `${posNames[i]}: ${c.a} — ${c.m}\nEje arquetípico: ${c.eje}\nCampo: ${c.p||'Arcano Mayor'}\nNúmero: ${c.n}\nIntegración: ${c.i}`
       ).join('\n\n')
     }`;
+    const apiBody = {
+      model:'claude-sonnet-4-20250514', max_tokens:16000, system:SYS_CRUZ,
+      messages:[{role:'user',content:msg}],
+      pregunta: q,
+      cartas: deck.map(c => ({ id:c.id, a:c.a, m:c.m, img:c.img, p:c.p||null, n:c.n }))
+    };
    const tryParse = (txt) => {
   const match = txt.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('sin JSON');
@@ -734,7 +735,7 @@ let lastError = null;
 
 for (let intento = 1; intento <= 2; intento++) {
   try {
-    const data = await callAPI(msg);
+    const data = await callAPI(apiBody);
     const txt = data.content.map(c=>c.text||'').join('');
     parsed = tryParse(txt);
     if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta del oráculo.');
