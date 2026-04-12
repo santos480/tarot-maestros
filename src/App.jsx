@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
 import AuthScreen from './AuthScreen';
+import HistorialDrawer from './HistorialDrawer';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -712,6 +713,7 @@ export default function TarotMaestros() {
   const [session, setSession] = useState(null);
   const [creditos, setCreditos] = useState(null);
   const [authReady, setAuthReady] = useState(false);
+  const [showHistorial, setShowHistorial] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -744,12 +746,12 @@ export default function TarotMaestros() {
   const flip = i => { if(rev[i]) return; setRev(p=>{const n=[...p];n[i]=true;return n;}); };
   const allRev = rev.every(Boolean);
 
-  const callAPI = async (msg, attempt=1) => {
+  const callAPI = async (body, attempt=1) => {
     const { data: { session: s } } = await supabase.auth.getSession();
     const res = await fetch('/api/oracle', {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${s.access_token}`},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8500,system:SYS,messages:[{role:'user',content:msg}]})
+      body:JSON.stringify(body)
     });
     if (res.status === 401) throw new Error('Sesión expirada. Recargá la página.');
     if (res.status === 402) {
@@ -763,7 +765,7 @@ export default function TarotMaestros() {
     if (rem !== null) setCreditos(parseInt(rem, 10));
     if ((res.status===529||data?.error?.type==='overloaded_error') && attempt<=3) {
       await new Promise(r=>setTimeout(r,2000*attempt));
-      return callAPI(msg, attempt+1);
+      return callAPI(body, attempt+1);
     }
     if (!res.ok||data.type==='error') throw new Error(data?.error?.message||`HTTP ${res.status}`);
     return data;
@@ -773,6 +775,12 @@ export default function TarotMaestros() {
     setLoading(true); setPhase('loading'); setErr('');
     const nameStr = name.trim() ? `El nombre del consultante es: ${name.trim()}\n` : '';
     const msg = `${nameStr}Pregunta del consultante: "${q}"\n\n${deck.map((c,i)=>`CARTA ${i+1}: ${c.a} — ${c.m}\nEje arquetípico: ${c.eje}\nCampo: ${c.p||'Arcano Mayor'}\nNúmero: ${c.n}\nIntegración: ${c.i}`).join('\n\n')}`;
+    const apiBody = {
+      model:'claude-sonnet-4-20250514', max_tokens:8500, system:SYS,
+      messages:[{role:'user',content:msg}],
+      pregunta: q,
+      cartas: deck.map(c => ({ id:c.id, a:c.a, m:c.m, img:c.img, p:c.p||null, n:c.n }))
+    };
 const tryParse = (txt) => {
   const match = txt.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('sin JSON');
@@ -798,7 +806,7 @@ let lastError = null;
 
 for (let intento = 1; intento <= 2; intento++) {
   try {
-    const data = await callAPI(msg);
+    const data = await callAPI(apiBody);
     const txt = data.content.map(c=>c.text||'').join('');
     parsed = tryParse(txt);
     if (!required.every(k => parsed[k])) throw new Error('Respuesta incompleta.');
@@ -849,6 +857,12 @@ setLoading(false);
               ✦ {creditos} crédito{creditos!==1?'s':''}
             </span>
           )}
+          <button onClick={()=>setShowHistorial(true)}
+            style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
+            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
+            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
+            LECTURAS
+          </button>
           <button onClick={()=>supabase.auth.signOut()}
             style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
             onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
@@ -870,6 +884,8 @@ setLoading(false);
   </button>
 </div>
       </header>
+
+      {showHistorial && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
 
       <main style={{maxWidth:820,margin:'0 auto',padding:'40px 20px 60px'}}>
 

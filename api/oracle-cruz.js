@@ -45,6 +45,8 @@ export default async function handler(req, res) {
     body = JSON.parse(body);
   }
 
+  const { pregunta, cartas, ...anthropicBody } = body;
+
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -52,10 +54,23 @@ export default async function handler(req, res) {
       'anthropic-version': '2023-06-01',
       'x-api-key': process.env.ANTHROPIC_API_KEY,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify(anthropicBody),
   });
 
   const data = await response.json();
+
+  // Guardar consulta si la respuesta fue exitosa
+  if (response.ok && data.content) {
+    const respuesta_ia = data.content.map(c => c.text || '').join('');
+    await supabaseAdmin.from('consultas').insert({
+      usuario_id: user.id,
+      tipo: 'cruz',
+      cartas: cartas || null,
+      pregunta: pregunta || null,
+      respuesta_ia
+    });
+  }
+
   res.setHeader('X-Credits-Remaining', String(creditData.creditos));
   res.status(response.status).json(data);
 }
