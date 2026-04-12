@@ -85,6 +85,9 @@ BEGIN
   SET creditos = creditos - 1
   WHERE id = p_usuario_id;
 
+  INSERT INTO public.transacciones (usuario_id, tipo, cantidad, descripcion)
+  VALUES (p_usuario_id, 'consulta', -1, 'Crédito usado en consulta');
+
   RETURN jsonb_build_object('ok', true, 'creditos', v_usuario.creditos - 1);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
