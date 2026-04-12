@@ -4,14 +4,14 @@
 -- ============================================================
 
 -- 1. TABLA USUARIOS
--- (si ya existe con otras columnas, usar ALTER TABLE en su lugar)
 CREATE TABLE IF NOT EXISTS public.usuarios (
-  id                   UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
-  email                TEXT NOT NULL,
-  creditos             INTEGER NOT NULL DEFAULT 5,
-  creditos_expiran_en  TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '30 days'),
-  plan                 TEXT DEFAULT 'explorador',
-  created_at           TIMESTAMPTZ DEFAULT NOW()
+  id                    UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  email                 TEXT NOT NULL,
+  plan                  TEXT DEFAULT 'explorador',
+  creditos_restantes    INTEGER NOT NULL DEFAULT 5,
+  creditos_vencen_en    TIMESTAMPTZ DEFAULT (NOW() + INTERVAL '30 days'),
+  fecha_registro        TIMESTAMPTZ DEFAULT NOW(),
+  codigo_mazo_canjeado  TEXT
 );
 
 ALTER TABLE public.usuarios ENABLE ROW LEVEL SECURITY;
@@ -25,12 +25,13 @@ CREATE POLICY "usuarios_actualizar_propio" ON public.usuarios
 
 -- 2. TABLA CONSULTAS
 CREATE TABLE IF NOT EXISTS public.consultas (
-  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  usuario_id  UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
-  tipo        TEXT NOT NULL DEFAULT '3cartas',
-  cartas      JSONB,
-  pregunta    TEXT,
-  created_at  TIMESTAMPTZ DEFAULT NOW()
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  usuario_id   UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
+  tipo         TEXT NOT NULL DEFAULT '3cartas',
+  cartas       JSONB,
+  pregunta     TEXT,
+  respuesta_ia TEXT,
+  fecha        TIMESTAMPTZ DEFAULT NOW()
 );
 
 ALTER TABLE public.consultas ENABLE ROW LEVEL SECURITY;
@@ -39,14 +40,15 @@ CREATE POLICY "consultas_propias" ON public.consultas
   FOR ALL USING (auth.uid() = usuario_id);
 
 
--- 3. TABLA TRANSACCIONES
+-- 3. TABLA TRANSACCIONES (pagos Stripe y recarga de créditos)
 CREATE TABLE IF NOT EXISTS public.transacciones (
-  id          UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  usuario_id  UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
-  tipo        TEXT NOT NULL,   -- 'bienvenida' | 'consulta' | 'compra' | 'qr_mazo'
-  cantidad    INTEGER NOT NULL, -- positivo = suma, negativo = descuenta
-  descripcion TEXT,
-  created_at  TIMESTAMPTZ DEFAULT NOW()
+  id                  UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  usuario_id          UUID REFERENCES public.usuarios(id) ON DELETE CASCADE,
+  monto               NUMERIC,
+  creditos_agregados  INTEGER,
+  stripe_payment_id   TEXT,
+  fecha               TIMESTAMPTZ DEFAULT NOW(),
+  estado              TEXT
 );
 
 ALTER TABLE public.transacciones ENABLE ROW LEVEL SECURITY;
@@ -70,25 +72,21 @@ BEGIN
     RETURN jsonb_build_object('ok', false, 'error', 'usuario_no_encontrado');
   END IF;
 
-  -- Verificar vencimiento solo si la fecha está seteada
-  IF v_usuario.creditos_expiran_en IS NOT NULL
-     AND v_usuario.creditos_expiran_en < NOW() THEN
-    UPDATE public.usuarios SET creditos = 0 WHERE id = p_usuario_id;
+  IF v_usuario.creditos_vencen_en IS NOT NULL
+     AND v_usuario.creditos_vencen_en < NOW() THEN
+    UPDATE public.usuarios SET creditos_restantes = 0 WHERE id = p_usuario_id;
     RETURN jsonb_build_object('ok', false, 'error', 'creditos_vencidos', 'creditos', 0);
   END IF;
 
-  IF v_usuario.creditos <= 0 THEN
+  IF v_usuario.creditos_restantes <= 0 THEN
     RETURN jsonb_build_object('ok', false, 'error', 'sin_creditos', 'creditos', 0);
   END IF;
 
   UPDATE public.usuarios
-  SET creditos = creditos - 1
+  SET creditos_restantes = creditos_restantes - 1
   WHERE id = p_usuario_id;
 
-  INSERT INTO public.transacciones (usuario_id, tipo, cantidad, descripcion)
-  VALUES (p_usuario_id, 'consulta', -1, 'Crédito usado en consulta');
-
-  RETURN jsonb_build_object('ok', true, 'creditos', v_usuario.creditos - 1);
+  RETURN jsonb_build_object('ok', true, 'creditos', v_usuario.creditos_restantes - 1);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
@@ -97,22 +95,13 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.usuarios (id, email, creditos, creditos_expiran_en)
+  INSERT INTO public.usuarios (id, email, creditos_restantes, creditos_vencen_en)
   VALUES (
     NEW.id,
     NEW.email,
     5,
     NOW() + INTERVAL '30 days'
   );
-
-  INSERT INTO public.transacciones (usuario_id, tipo, cantidad, descripcion)
-  VALUES (
-    NEW.id,
-    'bienvenida',
-    5,
-    '5 créditos de bienvenida — válidos 30 días'
-  );
-
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -727,8 +727,8 @@ export default function TarotMaestros() {
 
   useEffect(() => {
     if (!session) return;
-    supabase.from('usuarios').select('creditos').eq('id', session.user.id).single()
-      .then(({ data }) => { if (data) setCreditos(data.creditos); });
+    supabase.from('usuarios').select('creditos_restantes').eq('id', session.user.id).single()
+      .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
   }, [session]);
 
   if (!authReady) return null;
