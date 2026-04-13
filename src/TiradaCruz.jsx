@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from './supabase';
+import HistorialDrawer from './HistorialDrawer';
 
 // ── paleta por palo ───────────────────────────────────────────────────────────
 const PC = {
@@ -638,12 +639,15 @@ export default function TiradaCruz({ onBack }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr]         = useState('');
   const [creditos, setCreditos] = useState(null);
+  const [session, setSession] = useState(null);
+  const [showHistorial, setShowHistorial] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      supabase.from('usuarios').select('creditos').eq('id', session.user.id).single()
-        .then(({ data }) => { if (data) setCreditos(data.creditos); });
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!s) return;
+      setSession(s);
+      supabase.from('usuarios').select('creditos_restantes').eq('id', s.user.id).single()
+        .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
     });
   }, []);
 
@@ -778,6 +782,8 @@ setLoading(false);
         ::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:3px}
       `}</style>
 
+      {showHistorial && session && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
+
       {/* ── header ── */}
       <header style={{textAlign:'center',padding:'28px 20px 20px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
         {onBack && (
@@ -788,13 +794,21 @@ setLoading(false);
             ← TIRADA DE 3
           </button>
         )}
-        {creditos !== null && (
-          <div style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)'}}>
+        <div style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)',display:'flex',alignItems:'center',gap:12}}>
+          {creditos !== null && (
             <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
               ✦ {creditos} crédito{creditos!==1?'s':''}
             </span>
-          </div>
-        )}
+          )}
+          {session && (
+            <button onClick={()=>setShowHistorial(true)}
+              style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
+              onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
+              onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
+              LECTURAS
+            </button>
+          )}
+        </div>
         <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:8,opacity:.7}}>✦ ✦ ✦</div>
         <h1 style={{margin:0,fontSize:20,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
         <p style={{margin:'6px 0 3px',fontSize:9,letterSpacing:3,color:'#555'}}>TIRADA EN CRUZ · 5 CARTAS</p>
