@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { supabase } from './supabase';
+import PrivacidadModal from './PrivacidadModal';
 
 export default function AuthScreen({ onAuth }) {
   const [tab, setTab]           = useState('login');
+  const [showPrivacidad, setShowPrivacidad] = useState(false);
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading]   = useState(false);
@@ -46,6 +48,7 @@ export default function AuthScreen({ onAuth }) {
 
   return (
     <div style={{minHeight:'100vh',background:'#08080f',color:'#e8dfc8',fontFamily:'Georgia,serif',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'20px'}}>
+      {showPrivacidad && <PrivacidadModal onClose={()=>setShowPrivacidad(false)}/>}
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
         input{outline:none}
@@ -92,10 +95,19 @@ export default function AuthScreen({ onAuth }) {
           </div>
 
           {tab === 'registro' && (
-            <p style={{fontSize:11,color:'#7a6e5e',fontStyle:'italic',marginBottom:20,lineHeight:1.7,textAlign:'center'}}>
-              Al registrarte recibís <span style={{color:'#c9a84c'}}>5 créditos</span> gratuitos<br/>
-              para explorar el oráculo durante 30 días.
-            </p>
+            <div style={{marginBottom:20,textAlign:'center'}}>
+              <p style={{fontSize:11,color:'#7a6e5e',fontStyle:'italic',margin:'0 0 10px',lineHeight:1.7}}>
+                Al registrarte recibís <span style={{color:'#c9a84c'}}>5 créditos</span> gratuitos<br/>
+                para explorar el oráculo durante 30 días.
+              </p>
+              <p style={{fontSize:10,color:'#4a4440',margin:0,lineHeight:1.7}}>
+                Tus lecturas son privadas. Solo vos podés acceder a tu historial.{' '}
+                <button onClick={()=>setShowPrivacidad(true)}
+                  style={{background:'transparent',border:'none',color:'rgba(201,168,76,.4)',fontSize:10,cursor:'pointer',fontFamily:'inherit',padding:0,textDecoration:'underline'}}>
+                  Política de privacidad
+                </button>
+              </p>
+            </div>
           )}
 
           {err && <p style={{color:'#cc6655',fontSize:12,margin:'0 0 16px',textAlign:'center'}}>{err}</p>}
