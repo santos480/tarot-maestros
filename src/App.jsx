@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
 import AuthScreen from './AuthScreen';
@@ -575,6 +575,198 @@ function Btn({ label, onClick, disabled }) {
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 3 — Frases de cierre de lectura
+// Agregá más frases al array sin tocar el resto de la lógica
+// ─────────────────────────────────────────────────────────────────────────────
+const FRASES_CIERRE = [
+  'Lo que viste es un espejo, no un destino. La lectura abre sentidos; el camino lo construís vos.',
+  'Ningún símbolo dice lo que sos. Todo símbolo pregunta quién estás siendo.',
+];
+
+// Elige una frase aleatoria que no sea la última mostrada
+function elegirFrase(ultimaIdx) {
+  if (FRASES_CIERRE.length === 1) return { frase: FRASES_CIERRE[0], idx: 0 };
+  let idx;
+  do { idx = Math.floor(Math.random() * FRASES_CIERRE.length); } while (idx === ultimaIdx);
+  return { frase: FRASES_CIERRE[idx], idx };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 2 — Modal "Saber más"
+// ─────────────────────────────────────────────────────────────────────────────
+const SABER_MAS = [
+  {
+    q: '¿Qué es Tarot de los Maestros?',
+    a: 'Es un sistema de autoconocimiento simbólico que utiliza inteligencia artificial para generar interpretaciones basadas en arquetipos, tradiciones filosóficas y corrientes de pensamiento de diversas culturas.',
+  },
+  {
+    q: '¿Qué no es?',
+    a: 'No es un oráculo predictivo, un sistema de diagnóstico ni una herramienta terapéutica. No constituye ni sustituye una relación de acompañamiento profesional de ningún tipo. Las interpretaciones no constituyen hechos, diagnósticos, predicciones ni recomendaciones.',
+  },
+  {
+    q: '¿Cómo funciona la interpretación?',
+    a: 'Cada lectura es una construcción simbólica abierta, generada por inteligencia artificial a partir de un marco interpretativo diseñado por los creadores de la aplicación. El sentido de cada lectura lo completás vos: es una co-creación entre el sistema y tu propia reflexión.',
+  },
+  {
+    q: 'Limitaciones y responsabilidad',
+    a: 'La aplicación no garantiza exactitud, resultados ni efectos específicos derivados de su uso. No debe utilizarse para tomar decisiones críticas en materia de salud, salud mental, legal o financiera. Si estás atravesando un momento de crisis emocional, te recomendamos buscar apoyo profesional especializado.\n\nEl uso de esta aplicación es bajo tu exclusiva responsabilidad.',
+  },
+  {
+    q: 'Tus datos',
+    a: 'Las consultas son procesadas mediante servicios de inteligencia artificial de terceros. Para más información, consultá nuestra Política de Privacidad.',
+  },
+];
+
+function ModalSaberMas({ onClose }) {
+  return (
+    <div
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+      style={{position:'fixed',inset:0,background:'rgba(0,0,0,.88)',zIndex:2000,display:'flex',alignItems:'center',justifyContent:'center',padding:20}}
+    >
+      <div style={{background:'#0d0a1a',border:'1px solid rgba(201,168,76,.2)',borderRadius:12,maxWidth:580,width:'100%',maxHeight:'82vh',overflowY:'auto',padding:'32px 28px',position:'relative'}}>
+        <button
+          onClick={onClose}
+          style={{position:'absolute',top:14,right:16,background:'transparent',border:'none',color:'rgba(201,168,76,.4)',fontSize:22,lineHeight:1,cursor:'pointer',padding:0,fontFamily:'inherit'}}
+          onMouseEnter={e=>e.currentTarget.style.color='#c9a84c'}
+          onMouseLeave={e=>e.currentTarget.style.color='rgba(201,168,76,.4)'}
+        >×</button>
+
+        <div style={{fontSize:9,letterSpacing:5,color:'#c9a84c',textAlign:'center',marginBottom:24}}>SOBRE ESTA HERRAMIENTA</div>
+
+        {SABER_MAS.map(({ q, a }, i) => (
+          <div key={i} style={{marginBottom:20,paddingBottom:20,borderBottom:i < SABER_MAS.length-1 ? '1px solid rgba(201,168,76,.08)' : 'none'}}>
+            <div style={{fontSize:13,color:'#c9a84c',marginBottom:8,fontWeight:400}}>{q}</div>
+            {a.split('\n\n').map((p, j) => (
+              <p key={j} style={{margin:'0 0 8px',fontSize:13,lineHeight:1.85,color:'#b8a888'}}>{p}</p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 1 — Pantalla de bienvenida / disclaimer (primer uso, antes del login)
+// ─────────────────────────────────────────────────────────────────────────────
+function DisclaimerScreen({ onAceptar }) {
+  const [checked, setChecked]       = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
+
+  const handleComenzar = () => {
+    localStorage.setItem('disclaimer_aceptado', 'true');
+    onAceptar();
+  };
+
+  return (
+    <div style={{minHeight:'100vh',background:'#08080f',color:'#e8dfc8',fontFamily:'Georgia,serif',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'40px 20px'}}>
+      <style>{`@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}`}</style>
+
+      {mostrarModal && <ModalSaberMas onClose={() => setMostrarModal(false)} />}
+
+      <div style={{maxWidth:540,width:'100%',animation:'fadeUp .5s ease'}}>
+        {/* Encabezado */}
+        <div style={{textAlign:'center',marginBottom:32}}>
+          <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:12,opacity:.6}}>✦ ✦ ✦</div>
+          <h1 style={{margin:0,fontSize:22,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
+          <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
+        </div>
+
+        {/* Texto del disclaimer */}
+        <div style={{background:'rgba(255,255,255,.02)',border:'1px solid rgba(201,168,76,.12)',borderRadius:12,padding:'26px 28px',marginBottom:24}}>
+          <p style={{margin:'0 0 14px',fontSize:14,lineHeight:1.9,color:'#c8bda8'}}>
+            Tarot de los Maestros es un sistema de autoconocimiento simbólico asistido por inteligencia artificial. No predice el futuro, no ofrece diagnósticos ni verdades absolutas.
+          </p>
+          <p style={{margin:'0 0 14px',fontSize:14,lineHeight:1.9,color:'#c8bda8'}}>
+            Sus interpretaciones son simbólicas y abiertas: funcionan como disparadores de reflexión personal. No reemplazan el asesoramiento profesional en salud, salud mental, derecho o finanzas, ni deben usarse para tomar decisiones críticas en esos ámbitos.
+          </p>
+          <p style={{margin:'0 0 14px',fontSize:14,lineHeight:1.9,color:'#c8bda8'}}>
+            Si estás atravesando una crisis emocional o un momento de vulnerabilidad, esta herramienta no es un recurso de contención adecuado. Buscá apoyo profesional.
+          </p>
+          <p style={{margin:0,fontSize:14,lineHeight:1.9,color:'#c8bda8'}}>
+            La interpretación es una co-creación: vos decidís qué sentido darle.
+          </p>
+        </div>
+
+        {/* Checkbox */}
+        <label style={{display:'flex',alignItems:'flex-start',gap:12,cursor:'pointer',marginBottom:24,padding:'0 4px'}}>
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={e => setChecked(e.target.checked)}
+            style={{marginTop:3,cursor:'pointer',accentColor:'#c9a84c',flexShrink:0,width:15,height:15}}
+          />
+          <span style={{fontSize:13,color:'#b8a888',lineHeight:1.65}}>
+            Soy mayor de 18 años, leí y comprendo la naturaleza de esta herramienta.
+          </span>
+        </label>
+
+        {/* Botón */}
+        <div style={{textAlign:'center',marginBottom:20}}>
+          <Btn label="COMENZAR" onClick={handleComenzar} disabled={!checked} />
+        </div>
+
+        {/* Links secundarios */}
+        <div style={{textAlign:'center',display:'flex',gap:24,justifyContent:'center',flexWrap:'wrap'}}>
+          <button
+            onClick={() => setMostrarModal(true)}
+            style={{background:'transparent',border:'none',color:'rgba(201,168,76,.45)',fontSize:11,cursor:'pointer',fontFamily:'Georgia,serif',textDecoration:'underline',padding:0}}
+            onMouseEnter={e=>e.currentTarget.style.color='rgba(201,168,76,.8)'}
+            onMouseLeave={e=>e.currentTarget.style.color='rgba(201,168,76,.45)'}
+          >
+            Saber más sobre esta herramienta
+          </button>
+          {/* Política de privacidad — link a definir */}
+          <a
+            href="#"
+            onClick={e => e.preventDefault()}
+            style={{color:'rgba(201,168,76,.45)',fontSize:11,fontFamily:'Georgia,serif',textDecoration:'underline'}}
+            onMouseEnter={e=>e.currentTarget.style.color='rgba(201,168,76,.8)'}
+            onMouseLeave={e=>e.currentTarget.style.color='rgba(201,168,76,.45)'}
+          >
+            Política de privacidad
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 4 — Banner de recordatorio periódico (cada 10 lecturas)
+// ─────────────────────────────────────────────────────────────────────────────
+function BannerRecordatorio({ onDismiss }) {
+  return (
+    <div style={{background:'rgba(201,168,76,.05)',border:'1px solid rgba(201,168,76,.12)',borderRadius:8,padding:'11px 16px',marginBottom:24,display:'flex',alignItems:'center',gap:12,animation:'fadeUp .4s ease',textAlign:'left'}}>
+      <p style={{margin:0,flex:1,fontSize:12,color:'#a89878',lineHeight:1.65,fontStyle:'italic'}}>
+        Recordá: esta herramienta invita a la reflexión, no reemplaza el acompañamiento profesional.
+      </p>
+      <button
+        onClick={onDismiss}
+        style={{background:'transparent',border:'none',color:'rgba(201,168,76,.35)',fontSize:18,cursor:'pointer',padding:'0 2px',flexShrink:0,lineHeight:1,fontFamily:'inherit'}}
+        onMouseEnter={e=>e.currentTarget.style.color='rgba(201,168,76,.8)'}
+        onMouseLeave={e=>e.currentTarget.style.color='rgba(201,168,76,.35)'}
+      >×</button>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 3 — Frase de cierre visible al final de cada lectura
+// ─────────────────────────────────────────────────────────────────────────────
+function FraseCierre({ frase }) {
+  if (!frase) return null;
+  return (
+    <div style={{textAlign:'center',margin:'28px 0 20px',padding:'18px 20px',borderTop:'1px solid rgba(201,168,76,.1)'}}>
+      <div style={{fontSize:10,color:'rgba(201,168,76,.3)',marginBottom:10,letterSpacing:3}}>✦</div>
+      <p style={{margin:'0 auto',fontSize:13,lineHeight:1.9,color:'#7a7060',fontStyle:'italic',maxWidth:480}}>
+        {frase}
+      </p>
+    </div>
+  );
+}
+
 function PrintOverlay({ deck, reading, name, q, onClose }) {
   const keys = ['carta1','carta2','carta3'];
   const dateStr = new Date().toLocaleDateString('es-AR',{year:'numeric',month:'long',day:'numeric'});
@@ -715,6 +907,16 @@ export default function TarotMaestros() {
   const [authReady, setAuthReady] = useState(false);
   const [showHistorial, setShowHistorial] = useState(false);
 
+  // Capa 1 — disclaimer: se lee desde localStorage para no repetirlo
+  const [disclaimerAceptado, setDisclaimerAceptado] = useState(
+    () => localStorage.getItem('disclaimer_aceptado') === 'true'
+  );
+  // Capa 3 — frase de cierre de lectura
+  const [fraseCierre, setFraseCierre] = useState('');
+  const ultimaFraseIdxRef = useRef(-1);
+  // Capa 4 — banner de recordatorio periódico
+  const [mostrarBanner, setMostrarBanner] = useState(false);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -727,11 +929,22 @@ export default function TarotMaestros() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Capa 4 — muestra el banner cada vez que el contador de lecturas es múltiplo de 10
+  useEffect(() => {
+    if (phase === 'question') {
+      const contador = parseInt(localStorage.getItem('lecturas_contador') || '0', 10);
+      setMostrarBanner(contador > 0 && contador % 10 === 0);
+    }
+  }, [phase]);
+
   useEffect(() => {
     if (!session) return;
     supabase.from('usuarios').select('creditos_restantes').eq('id', session.user.id).single()
       .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
   }, [session]);
+
+  // Capa 1 — se muestra antes del login, solo la primera vez
+  if (!disclaimerAceptado) return <DisclaimerScreen onAceptar={() => setDisclaimerAceptado(true)} />;
 
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
@@ -822,6 +1035,13 @@ for (let intento = 1; intento <= 2; intento++) {
 if (parsed) {
   setReading(parsed);
   setPhase('result');
+  // Capa 3 — elegir frase de cierre sin repetir la anterior
+  const { frase, idx } = elegirFrase(ultimaFraseIdxRef.current);
+  ultimaFraseIdxRef.current = idx;
+  setFraseCierre(frase);
+  // Capa 4 — incrementar contador de lecturas completadas
+  const contadorActual = parseInt(localStorage.getItem('lecturas_contador') || '0', 10);
+  localStorage.setItem('lecturas_contador', String(contadorActual + 1));
 } else {
   setErr(lastError?.message || 'El oráculo no pudo completar la lectura. Volvé a consultarlo.');
   setPhase('reveal');
@@ -829,7 +1049,7 @@ if (parsed) {
 setLoading(false);
 };
 
-  const reset = () => { setPhase('question'); setQ(''); setName(''); setDeck([]); setRev([false,false,false]); setReading(null); setErr(''); setShowPrint(false); };
+  const reset = () => { setPhase('question'); setQ(''); setName(''); setDeck([]); setRev([false,false,false]); setReading(null); setErr(''); setShowPrint(false); setFraseCierre(''); };
 
   const inputStyle = {width:'100%',background:'rgba(255,255,255,.02)',border:'1px solid rgba(201,168,76,.2)',borderRadius:8,color:'#e8dfc8',fontSize:14,fontFamily:'inherit',padding:'12px 16px',boxSizing:'border-box',transition:'border-color .3s'};
 
@@ -891,6 +1111,12 @@ setLoading(false);
 
         {phase==='question' && (
           <div style={{animation:'fadeUp .5s ease',textAlign:'center'}}>
+            {/* Capa 4 — banner de recordatorio periódico */}
+            {mostrarBanner && (
+              <div style={{maxWidth:500,margin:'0 auto 8px'}}>
+                <BannerRecordatorio onDismiss={() => setMostrarBanner(false)} />
+              </div>
+            )}
             <p style={{fontSize:14,lineHeight:1.9,color:'#b8a888',maxWidth:480,margin:'0 auto 36px',fontStyle:'italic'}}>
               Cada carta es un espejo.<br/>El oráculo ilumina la cualidad de conciencia activa en este momento.
             </p>
@@ -986,6 +1212,9 @@ setLoading(false);
                 </div>
               );})}
             </div>
+
+            {/* Capa 3 — frase de cierre de lectura */}
+            <FraseCierre frase={fraseCierre} />
 
             <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
               <Btn label="DESCARGAR PDF" onClick={()=>setShowPrint(true)}/>
