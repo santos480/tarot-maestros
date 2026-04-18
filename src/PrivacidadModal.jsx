@@ -60,9 +60,7 @@ export default function PrivacidadModal({ onClose }) {
 
           <Section title="1. Quién opera este servicio">
             <p>
-              El Tarot de los Maestros es un servicio creado y operado por <strong style={{color:'#e8dfc8'}}>Santosh</strong>.
-              Para consultas relacionadas con privacidad podés escribir a{' '}
-              <span style={{color:'#c9a84c'}}>numero170@gmail.com</span>.
+              El Tarot de los Maestros es un servicio creado y operado por <strong style={{color:'#e8dfc8'}}>Santosh</strong>. Para consultas podés escribir a <span style={{color:'#c9a84c'}}>numero170@gmail.com</span>
             </p>
           </Section>
 
@@ -100,7 +98,7 @@ export default function PrivacidadModal({ onClose }) {
               Dentro de la app, <strong style={{color:'#e8dfc8'}}>solo vos</strong> podés acceder a tu historial de lecturas mediante tu cuenta.
             </p>
             <p>
-              Como operador técnico del servicio, Santosh tiene acceso administrativo a la base de datos. Este acceso existe exclusivamente para tareas de mantenimiento y soporte técnico, y no se utiliza para leer el contenido de consultas individuales de forma sistemática.
+              El operador técnico del servicio tiene acceso administrativo a la base de datos exclusivamente para tareas de mantenimiento y soporte técnico.
             </p>
             <p>
               Tus lecturas nunca serán publicadas, compartidas ni utilizadas con fines que no sean los descritos en esta política.
