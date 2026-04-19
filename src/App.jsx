@@ -3,6 +3,7 @@ import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
 import AuthScreen from './AuthScreen';
 import HistorialDrawer from './HistorialDrawer';
+import AdminPanel from './components/AdminPanel';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -904,6 +905,8 @@ export default function TarotMaestros() {
   const [tiradaActiva, setTiradaActiva] = useState('tres');
   const [session, setSession] = useState(null);
   const [creditos, setCreditos] = useState(null);
+  const [solicitandoCreditos, setSolicitandoCreditos] = useState(false);
+  const [creditosSolicitados, setCreditosSolicitados] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const [showHistorial, setShowHistorial] = useState(false);
 
@@ -916,6 +919,22 @@ export default function TarotMaestros() {
   const ultimaFraseIdxRef = useRef(-1);
   // Capa 4 — banner de recordatorio periódico
   const [mostrarBanner, setMostrarBanner] = useState(false);
+
+  async function solicitarCreditos() {
+    setSolicitandoCreditos(true);
+    try {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      await fetch('/api/request-credits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: s.user.email }),
+      });
+      setCreditosSolicitados(true);
+    } catch (e) {
+      console.error('Error solicitando créditos:', e);
+    }
+    setSolicitandoCreditos(false);
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -945,6 +964,7 @@ export default function TarotMaestros() {
 
   // Capa 1 — se muestra antes del login, solo la primera vez
   if (!disclaimerAceptado) return <DisclaimerScreen onAceptar={() => setDisclaimerAceptado(true)} />;
+  if (typeof window !== 'undefined' && window.location.pathname === '/admin') return <AdminPanel />;
 
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
@@ -1073,8 +1093,29 @@ setLoading(false);
       <header style={{textAlign:'center',padding:'32px 20px 24px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
         <div style={{position:'absolute',right:16,top:16,display:'flex',alignItems:'center',gap:12}}>
           {creditos !== null && (
-            <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
-              ✦ {creditos} crédito{creditos!==1?'s':''}
+            <span style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
+              <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
+                ✦ {creditos} crédito{creditos!==1?'s':''}
+              </span>
+              {creditos === 0 && (
+                <button
+                  onClick={solicitarCreditos}
+                  disabled={solicitandoCreditos || creditosSolicitados}
+                  style={{
+                    background:'transparent',
+                    border:'1px solid #6b4fa0',
+                    color:'#c9a0ff',
+                    borderRadius:'4px',
+                    padding:'3px 10px',
+                    cursor: creditosSolicitados ? 'default' : 'pointer',
+                    fontSize:'9px',
+                    letterSpacing:'0.5px',
+                    whiteSpace:'nowrap',
+                  }}
+                >
+                  {creditosSolicitados ? 'Solicitud enviada ✓' : solicitandoCreditos ? 'Enviando...' : 'Solicitá más créditos'}
+                </button>
+              )}
             </span>
           )}
           <button onClick={()=>setShowHistorial(true)}
