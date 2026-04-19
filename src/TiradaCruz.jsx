@@ -639,8 +639,26 @@ export default function TiradaCruz({ onBack }) {
   const [loading, setLoading] = useState(false);
   const [err, setErr]         = useState('');
   const [creditos, setCreditos] = useState(null);
+  const [solicitandoCreditos, setSolicitandoCreditos] = useState(false);
+  const [creditosSolicitados, setCreditosSolicitados] = useState(false);
   const [session, setSession] = useState(null);
   const [showHistorial, setShowHistorial] = useState(false);
+
+  async function solicitarCreditos() {
+    setSolicitandoCreditos(true);
+    try {
+      const { data: { session: s } } = await supabase.auth.getSession();
+      await fetch('/api/request-credits', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userEmail: s.user.email }),
+      });
+      setCreditosSolicitados(true);
+    } catch (e) {
+      console.error('Error solicitando créditos:', e);
+    }
+    setSolicitandoCreditos(false);
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
@@ -796,8 +814,29 @@ setLoading(false);
         )}
         <div style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)',display:'flex',alignItems:'center',gap:12}}>
           {creditos !== null && (
-            <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
-              ✦ {creditos} crédito{creditos!==1?'s':''}
+            <span style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
+              <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
+                ✦ {creditos} crédito{creditos!==1?'s':''}
+              </span>
+              {creditos === 0 && (
+                <button
+                  onClick={solicitarCreditos}
+                  disabled={solicitandoCreditos || creditosSolicitados}
+                  style={{
+                    background:'transparent',
+                    border:'1px solid #6b4fa0',
+                    color:'#c9a0ff',
+                    borderRadius:'4px',
+                    padding:'3px 10px',
+                    cursor: creditosSolicitados ? 'default' : 'pointer',
+                    fontSize:'9px',
+                    letterSpacing:'0.5px',
+                    whiteSpace:'nowrap',
+                  }}
+                >
+                  {creditosSolicitados ? 'Solicitud enviada ✓' : solicitandoCreditos ? 'Enviando...' : 'Solicitá más créditos'}
+                </button>
+              )}
             </span>
           )}
           {session && (
