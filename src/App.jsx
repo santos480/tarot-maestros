@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
+import CartaDelDia from './CartaDelDia';
 import AuthScreen from './AuthScreen';
 import HistorialDrawer from './HistorialDrawer';
 import AdminPanel from './components/AdminPanel';
@@ -971,6 +972,7 @@ export default function TarotMaestros() {
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
   if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
+  if (tiradaActiva === 'cartadeldia') return <CartaDelDia user={session?.user} session={session} onVolver={() => setTiradaActiva('tres')} />;
 
   const start = () => {
     if (!q.trim()) return;
@@ -1144,6 +1146,10 @@ setLoading(false);
   <button onClick={()=>setTiradaActiva('cruz')}
     style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
     TIRADA EN CRUZ ✦
+  </button>
+  <button onClick={()=>setTiradaActiva('cartadeldia')}
+    style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+    CARTA DEL DÍA ✦
   </button>
 </div>
       </header>
