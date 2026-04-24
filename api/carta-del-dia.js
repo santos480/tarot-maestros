@@ -65,8 +65,8 @@ export default async function handler(req, res) {
     await supabaseAdmin.from('consultas').insert({
       usuario_id: user.id,
       tipo: 'carta_del_dia',
-      cartas: carta || null,
-      pregunta: null,
+      cartas: carta ? [{ id: carta.id, a: carta.a, m: carta.m, n: carta.n, p: carta.p, img: carta.img, eje: carta.eje }] : null,
+      pregunta: `Carta del día — ${dimension}`,
       respuesta_ia
     });
   }

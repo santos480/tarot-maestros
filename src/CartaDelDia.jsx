@@ -528,10 +528,27 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
           </div>
         )}
 
-        {/* Botón nueva carta */}
+        {/* Botones de navegación */}
         {!loading && (reading || err) && (
           <div style={{textAlign:'center',marginTop:40}}>
-            <Btn label="NUEVA CARTA" onClick={reset} />
+            <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+              <button onClick={onBack}
+                style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+                3 CARTAS
+              </button>
+              <button onClick={onBack}
+                style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+                TIRADA EN CRUZ
+              </button>
+              <button onClick={reset}
+                style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+                NUEVA CARTA
+              </button>
+              <button onClick={async () => { await supabase.auth.signOut(); onBack(); }}
+                style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
+                SALIR
+              </button>
+            </div>
           </div>
         )}
       </div>
