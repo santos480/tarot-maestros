@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from './supabase';
-import HistorialDrawer from './HistorialDrawer';
+import AppHeader from './components/AppHeader';
 
 // ── paleta por palo ───────────────────────────────────────────────────────────
 const PC = {
@@ -629,7 +629,7 @@ function Btn({ label, onClick, disabled }) {
 }
 
 // ── componente principal ──────────────────────────────────────────────────────
-export default function TiradaCruz({ onBack }) {
+export default function TiradaCruz({ onBack, onHistorial, creditos, solicitarCreditos, solicitandoCreditos, creditosSolicitados, session }) {
   const [phase, setPhase]     = useState('question');
   const [name, setName]       = useState('');
   const [q, setQ]             = useState('');
@@ -638,36 +638,6 @@ export default function TiradaCruz({ onBack }) {
   const [reading, setReading] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr]         = useState('');
-  const [creditos, setCreditos] = useState(null);
-  const [solicitandoCreditos, setSolicitandoCreditos] = useState(false);
-  const [creditosSolicitados, setCreditosSolicitados] = useState(false);
-  const [session, setSession] = useState(null);
-  const [showHistorial, setShowHistorial] = useState(false);
-
-  async function solicitarCreditos() {
-    setSolicitandoCreditos(true);
-    try {
-      const { data: { session: s } } = await supabase.auth.getSession();
-      await fetch('/api/request-credits', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userEmail: s.user.email }),
-      });
-      setCreditosSolicitados(true);
-    } catch (e) {
-      console.error('Error solicitando créditos:', e);
-    }
-    setSolicitandoCreditos(false);
-  }
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (!s) return;
-      setSession(s);
-      supabase.from('usuarios').select('creditos_restantes').eq('id', s.user.id).single()
-        .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
-    });
-  }, []);
 
   const start = () => {
     if (!q.trim()) return;
@@ -800,61 +770,19 @@ setLoading(false);
         ::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:3px}
       `}</style>
 
-      {showHistorial && session && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
-
       {/* ── header ── */}
-      <header style={{textAlign:'center',padding:'28px 20px 20px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
-        {onBack && (
-          <button onClick={onBack}
-            style={{position:'absolute',left:20,top:'50%',transform:'translateY(-50%)',background:'transparent',border:'1px solid rgba(201,168,76,.3)',borderRadius:4,color:'rgba(201,168,76,.6)',fontSize:8,letterSpacing:2,padding:'7px 14px',cursor:'pointer',fontFamily:'inherit'}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.7)'}
-            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.3)'}>
-            ← TIRADA DE 3
-          </button>
-        )}
-        <div style={{position:'absolute',right:16,top:'50%',transform:'translateY(-50%)',display:'flex',alignItems:'center',gap:12}}>
-          {creditos !== null && (
-            <span style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
-              <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
-                ✦ {creditos} crédito{creditos!==1?'s':''}
-              </span>
-              {creditos === 0 && (
-                <button
-                  onClick={solicitarCreditos}
-                  disabled={solicitandoCreditos || creditosSolicitados}
-                  style={{
-                    background:'transparent',
-                    border:'1px solid #6b4fa0',
-                    color:'#c9a0ff',
-                    borderRadius:'4px',
-                    padding:'3px 10px',
-                    cursor: creditosSolicitados ? 'default' : 'pointer',
-                    fontSize:'9px',
-                    letterSpacing:'0.5px',
-                    whiteSpace:'nowrap',
-                  }}
-                >
-                  {creditosSolicitados ? 'Solicitud enviada ✓' : solicitandoCreditos ? 'Enviando...' : 'Solicitá más créditos'}
-                </button>
-              )}
-            </span>
-          )}
-          {session && (
-            <button onClick={()=>setShowHistorial(true)}
-              style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
-              onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
-              onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
-              LECTURAS
-            </button>
-          )}
-        </div>
-        <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:8,opacity:.7}}>✦ ✦ ✦</div>
-        <h1 style={{margin:0,fontSize:20,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
-        <p style={{margin:'6px 0 3px',fontSize:9,letterSpacing:3,color:'#555'}}>TIRADA EN CRUZ · 5 CARTAS</p>
-        <p style={{margin:0,fontSize:8,letterSpacing:1.5,color:'#3a3a3a',fontStyle:'italic'}}>
-          Esencia · Corriente · Horizonte · Conciencia · Sombra
-        </p>
-      </header>
+      <AppHeader
+        tiradaActiva="cruz"
+        onNavegar={(sec) => {
+          if (sec === 'historial') onHistorial();
+          else onBack();
+        }}
+        creditos={creditos}
+        onSolicitarCreditos={solicitarCreditos}
+        solicitandoCreditos={solicitandoCreditos}
+        creditosSolicitados={creditosSolicitados}
+        session={session}
+      />
 
       <main style={{maxWidth:820,margin:'0 auto',padding:'40px 20px 60px'}}>
 

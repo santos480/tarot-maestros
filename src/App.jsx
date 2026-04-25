@@ -4,6 +4,7 @@ import TiradaCruz from './TiradaCruz';
 import AuthScreen from './AuthScreen';
 import HistorialDrawer from './HistorialDrawer';
 import AdminPanel from './components/AdminPanel';
+import AppHeader from './components/AppHeader';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -968,7 +969,15 @@ export default function TarotMaestros() {
 
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
-  if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
+  if (tiradaActiva === 'cruz') return <TiradaCruz
+    onBack={() => setTiradaActiva('tres')}
+    onHistorial={() => setTiradaActiva('historial')}
+    creditos={creditos}
+    solicitarCreditos={solicitarCreditos}
+    solicitandoCreditos={solicitandoCreditos}
+    creditosSolicitados={creditosSolicitados}
+    session={session}
+  />;
 
   const start = () => {
     if (!q.trim()) return;
@@ -1090,61 +1099,15 @@ setLoading(false);
         <PrintOverlay deck={deck} reading={reading} name={name} q={q} onClose={()=>setShowPrint(false)}/>
       )}
 
-      <header style={{textAlign:'center',padding:'32px 20px 24px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
-        <div style={{position:'absolute',right:16,top:16,display:'flex',alignItems:'center',gap:12}}>
-          {creditos !== null && (
-            <span style={{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}}>
-              <span style={{fontSize:10,color:creditos>0?'#c9a84c':'#cc6655',letterSpacing:1,fontStyle:'italic'}}>
-                ✦ {creditos} crédito{creditos!==1?'s':''}
-              </span>
-              {creditos === 0 && (
-                <button
-                  onClick={solicitarCreditos}
-                  disabled={solicitandoCreditos || creditosSolicitados}
-                  style={{
-                    background:'transparent',
-                    border:'1px solid #6b4fa0',
-                    color:'#c9a0ff',
-                    borderRadius:'4px',
-                    padding:'3px 10px',
-                    cursor: creditosSolicitados ? 'default' : 'pointer',
-                    fontSize:'9px',
-                    letterSpacing:'0.5px',
-                    whiteSpace:'nowrap',
-                  }}
-                >
-                  {creditosSolicitados ? 'Solicitud enviada ✓' : solicitandoCreditos ? 'Enviando...' : 'Solicitá más créditos'}
-                </button>
-              )}
-            </span>
-          )}
-          <button onClick={()=>setShowHistorial(true)}
-            style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
-            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
-            LECTURAS
-          </button>
-          <button onClick={()=>supabase.auth.signOut()}
-            style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
-            onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
-            SALIR
-          </button>
-        </div>
-        <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:10,opacity:.7}}>✦ ✦ ✦</div>
-        <h1 style={{margin:0,fontSize:22,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
-        <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
-        <div style={{marginTop:12,display:'flex',gap:8,justifyContent:'center'}}>
-  <button onClick={()=>setTiradaActiva('tres')}
-    style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
-    3 CARTAS
-  </button>
-  <button onClick={()=>setTiradaActiva('cruz')}
-    style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
-    TIRADA EN CRUZ ✦
-  </button>
-</div>
-      </header>
+      <AppHeader
+        tiradaActiva={tiradaActiva}
+        onNavegar={setTiradaActiva}
+        creditos={creditos}
+        onSolicitarCreditos={solicitarCreditos}
+        solicitandoCreditos={solicitandoCreditos}
+        creditosSolicitados={creditosSolicitados}
+        session={session}
+      />
 
       {showHistorial && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
 
