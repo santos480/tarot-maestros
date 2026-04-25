@@ -164,7 +164,7 @@ function LecturaExpandida({ consulta }) {
 
       {/* Contenido según tipo */}
       {esCruz
-        ? Object.entries(LABELS_CRUZ).map(([key, label]) => parsed[key] && (
+        ? Object.entries(LABELS_CRUZ).filter(([key]) => key !== 'sintesis').map(([key, label]) => parsed[key] && (
             <div key={key} style={{ marginBottom:16 }}>
               <div style={{ fontSize:8, letterSpacing:3, color:'#c9a84c', marginBottom:6 }}>
                 {label.toUpperCase()}
