@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { supabase } from './supabase';
-import HistorialDrawer from './HistorialDrawer';
 
 // ── paleta por palo ───────────────────────────────────────────────────────────
 const PC = {
@@ -629,7 +628,7 @@ function Btn({ label, onClick, disabled }) {
 }
 
 // ── componente principal ──────────────────────────────────────────────────────
-export default function TiradaCruz({ onBack }) {
+export default function TiradaCruz({ onBack, onHistorial }) {
   const [phase, setPhase]     = useState('question');
   const [name, setName]       = useState('');
   const [q, setQ]             = useState('');
@@ -642,7 +641,6 @@ export default function TiradaCruz({ onBack }) {
   const [solicitandoCreditos, setSolicitandoCreditos] = useState(false);
   const [creditosSolicitados, setCreditosSolicitados] = useState(false);
   const [session, setSession] = useState(null);
-  const [showHistorial, setShowHistorial] = useState(false);
 
   async function solicitarCreditos() {
     setSolicitandoCreditos(true);
@@ -800,8 +798,6 @@ setLoading(false);
         ::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:3px}
       `}</style>
 
-      {showHistorial && session && <HistorialDrawer session={session} onClose={()=>setShowHistorial(false)}/>}
-
       {/* ── header ── */}
       <header style={{textAlign:'center',padding:'28px 20px 20px',borderBottom:'1px solid rgba(201,168,76,.15)',position:'relative'}}>
         {onBack && (
@@ -839,8 +835,8 @@ setLoading(false);
               )}
             </span>
           )}
-          {session && (
-            <button onClick={()=>setShowHistorial(true)}
+          {session && onHistorial && (
+            <button onClick={onHistorial}
               style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
               onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
               onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>

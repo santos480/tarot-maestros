@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from './supabase';
 import TiradaCruz from './TiradaCruz';
 import CartaDelDia from './CartaDelDia';
+import HistorialPanel from './HistorialPanel';
 import AuthScreen from './AuthScreen';
 import HistorialDrawer from './HistorialDrawer';
 import AdminPanel from './components/AdminPanel';
@@ -971,8 +972,9 @@ export default function TarotMaestros() {
 
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
-  if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} />;
+  if (tiradaActiva === 'cruz') return <TiradaCruz onBack={() => setTiradaActiva('tres')} onHistorial={() => setTiradaActiva('historial')} />;
   if (tiradaActiva === 'cartadeldia') return <CartaDelDia user={session?.user} session={session} onVolver={() => setTiradaActiva('tres')} />;
+  if (tiradaActiva === 'historial') return <HistorialPanel user={session?.user} session={session} onVolver={() => setTiradaActiva('tres')} />;
 
   const start = () => {
     if (!q.trim()) return;
@@ -1122,7 +1124,7 @@ setLoading(false);
               )}
             </span>
           )}
-          <button onClick={()=>setShowHistorial(true)}
+          <button onClick={()=>setTiradaActiva('historial')}
             style={{background:'transparent',border:'1px solid rgba(201,168,76,.2)',borderRadius:4,color:'rgba(201,168,76,.4)',fontSize:8,letterSpacing:2,padding:'5px 10px',cursor:'pointer',fontFamily:'inherit'}}
             onMouseEnter={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
             onMouseLeave={e=>e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}>
