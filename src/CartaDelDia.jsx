@@ -294,7 +294,6 @@ function Btn({ label, onClick, disabled }) {
 
 // ── componente principal ──────────────────────────────────────────────────────
 export default function CartaDelDia({ onVolver, creditos, session }) {
-  const [session, setSession] = useState(null);
   const [nombre, setNombre] = useState('');
   const [dimension, setDimension] = useState(null);
   const [card, setCard] = useState(null);
@@ -304,15 +303,12 @@ export default function CartaDelDia({ onVolver, creditos, session }) {
   const [err, setErr] = useState('');
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (s) {
-        setSession(s);
-        // Opcional: cargar nombre del usuario si está guardado
-        supabase.from('usuarios').select('nombre').eq('id', s.user.id).single()
-          .then(({ data }) => { if (data?.nombre) setNombre(data.nombre); });
-      }
-    });
-  }, []);
+    if (session) {
+      // Opcional: cargar nombre del usuario si está guardado
+      supabase.from('usuarios').select('nombre').eq('id', session.user.id).single()
+        .then(({ data }) => { if (data?.nombre) setNombre(data.nombre); });
+    }
+  }, [session]);
 
   const revelarCarta = () => {
     if (!dimension) return;
