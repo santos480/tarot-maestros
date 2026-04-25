@@ -292,7 +292,7 @@ function Btn({ label, onClick, disabled }) {
 }
 
 // ── componente principal ──────────────────────────────────────────────────────
-export default function CartaDelDia({ onBack }) {
+export default function CartaDelDia({ onVolver }) {
   const [session, setSession] = useState(null);
   const [nombre, setNombre] = useState('');
   const [dimension, setDimension] = useState(null);
@@ -416,7 +416,7 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
           {/* Header con botón volver */}
           <div style={{marginBottom:40}}>
             <button
-              onClick={onBack}
+              onClick={onVolver}
               style={{background:'transparent',border:'1px solid rgba(201,168,76,0.3)',borderRadius:4,color:'#c9a84c',fontSize:9,letterSpacing:2,padding:'8px 20px',cursor:'pointer',fontFamily:'inherit'}}
             >
               ← VOLVER
@@ -532,11 +532,11 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
         {!loading && (reading || err) && (
           <div style={{textAlign:'center',marginTop:40}}>
             <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
-              <button onClick={onBack}
+              <button onClick={onVolver}
                 style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
                 3 CARTAS
               </button>
-              <button onClick={onBack}
+              <button onClick={onVolver}
                 style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
                 TIRADA EN CRUZ
               </button>
@@ -544,7 +544,7 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
                 style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
                 NUEVA CARTA
               </button>
-              <button onClick={async () => { await supabase.auth.signOut(); onBack(); }}
+              <button onClick={async () => { await supabase.auth.signOut(); onVolver(); }}
                 style={{background:'transparent',border:'1px solid rgba(201,168,76,.4)',borderRadius:4,color:'rgba(201,168,76,.7)',fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'}}>
                 SALIR
               </button>

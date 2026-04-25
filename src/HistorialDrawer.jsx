@@ -18,6 +18,20 @@ const LABELS_CRUZ = {
   sintesis:  'Síntesis',
 };
 
+const DIMENSION_LABELS = {
+  'DIMENSION_COMPRENDER': 'Quiero entender algo mejor hoy',
+  'DIMENSION_ACTUAR': 'Necesito energía o dirección para actuar',
+  'DIMENSION_VINCULOS': 'Algo en mis vínculos pide atención',
+  'DIMENSION_SOLTAR': 'Quiero soltar algo que ya no me sirve',
+  'DIMENSION_EMERGENTE': 'Siento que algo nuevo está naciendo en mí'
+};
+
+const getDimensionLabel = (pregunta) => {
+  if (!pregunta) return '';
+  const key = Object.keys(DIMENSION_LABELS).find(k => pregunta.includes(k));
+  return key ? DIMENSION_LABELS[key] : pregunta;
+};
+
 function Paras({ text }) {
   if (!text) return null;
   return (
@@ -87,7 +101,42 @@ function LecturaExpandida({ consulta }) {
   const parsed = tryParse(consulta.respuesta_ia);
   const cartas = consulta.cartas || [];
   const esCruz = consulta.tipo === 'cruz';
+  const esCartaDelDia = consulta.tipo === 'carta_del_dia';
 
+  // Renderizado especial para Carta del Día
+  if (esCartaDelDia) {
+    const carta = cartas[0];
+    const dimensionLegible = getDimensionLabel(consulta.pregunta);
+
+    return (
+      <div style={{ marginTop: 16 }}>
+        {/* Carta */}
+        {carta && (
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8, marginBottom:20 }}>
+            <CardThumb card={carta} />
+            <div style={{ textAlign:'center' }}>
+              <div style={{ fontSize:11, color:'#e8dfc8', marginBottom:2 }}>{carta.a}</div>
+              <div style={{ fontSize:9, color:'#999', fontStyle:'italic' }}>{carta.m}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Dimensión */}
+        {dimensionLegible && (
+          <div style={{ fontSize:10, color:'#c9a84c', fontStyle:'italic', marginBottom:16, textAlign:'center' }}>
+            {dimensionLegible}
+          </div>
+        )}
+
+        {/* Respuesta (texto plano) */}
+        <div style={{ fontSize:13, lineHeight:1.8, color:'#c8bda8', whiteSpace:'pre-wrap' }}>
+          {consulta.respuesta_ia}
+        </div>
+      </div>
+    );
+  }
+
+  // Renderizado normal para 3 cartas y Cruz
   if (!parsed) {
     return (
       <div style={{ padding:'12px 0', fontSize:12, color:'#666', fontStyle:'italic' }}>
@@ -263,7 +312,7 @@ export default function HistorialDrawer({ session, onClose }) {
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:8 }}>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:8, letterSpacing:2, color:'#c9a84c', marginBottom:5 }}>
-                        {c.tipo === 'cruz' ? 'TIRADA EN CRUZ' : '3 CARTAS'}
+                        {c.tipo === 'cruz' ? 'TIRADA EN CRUZ' : c.tipo === 'carta_del_dia' ? 'CARTA DEL DÍA ✦' : '3 CARTAS'}
                         {' · '}
                         {formatFecha(c.fecha)}
                       </div>
