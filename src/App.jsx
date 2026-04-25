@@ -967,6 +967,21 @@ export default function TarotMaestros() {
       .then(({ data }) => { if (data) setCreditos(data.creditos_restantes); });
   }, [session]);
 
+  // Resetea el estado de la tirada de 3 cartas al montar el componente
+  useEffect(() => {
+    if (tiradaActiva === 'tres') {
+      setPhase('question');
+      setQ('');
+      setName('');
+      setDeck([]);
+      setRev([false, false, false]);
+      setReading(null);
+      setErr('');
+      setShowPrint(false);
+      setFraseCierre('');
+    }
+  }, [tiradaActiva]);
+
   // Capa 1 — se muestra antes del login, solo la primera vez
   if (!disclaimerAceptado) return <DisclaimerScreen onAceptar={() => setDisclaimerAceptado(true)} />;
   if (typeof window !== 'undefined' && window.location.pathname === '/admin') return <AdminPanel />;
