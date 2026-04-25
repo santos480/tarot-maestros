@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from './supabase';
+import AppHeader from './components/AppHeader';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8' },
@@ -201,10 +202,12 @@ function LecturaExpandida({ consulta }) {
   );
 }
 
-export default function HistorialDrawer({ session, onClose }) {
-  const [consultas, setConsultas] = useState([]);
+export default function HistorialPanel({ user, session, onVolver, creditos }) {
+  const [todasLasConsultas, setTodasLasConsultas] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   const [expanded, setExpanded] = useState(null);
+  const [filtro, setFiltro] = useState('todas');
+  const [pagina, setPagina] = useState(1);
 
   useEffect(() => {
     supabase
@@ -212,84 +215,125 @@ export default function HistorialDrawer({ session, onClose }) {
       .select('id, tipo, pregunta, cartas, respuesta_ia, fecha')
       .eq('usuario_id', session.user.id)
       .order('fecha', { ascending: false })
+      .limit(500)
       .then(({ data }) => {
-        setConsultas(data || []);
+        setTodasLasConsultas(data || []);
         setLoadingData(false);
       });
   }, [session]);
 
   const toggle = (id) => setExpanded(prev => prev === id ? null : id);
 
+  const cambiarFiltro = (nuevoFiltro) => {
+    setFiltro(nuevoFiltro);
+    setPagina(1);
+  };
+
+  // Filtrado
+  const consultasFiltradas = filtro === 'todas'
+    ? todasLasConsultas
+    : todasLasConsultas.filter(c => c.tipo === filtro);
+
+  // Paginación
+  const totalPaginas = Math.ceil(consultasFiltradas.length / 10);
+  const consultasPagina = consultasFiltradas.slice((pagina - 1) * 10, pagina * 10);
+
+  const irPaginaAnterior = () => {
+    if (pagina > 1) setPagina(pagina - 1);
+  };
+
+  const irPaginaSiguiente = () => {
+    if (pagina < totalPaginas) setPagina(pagina + 1);
+  };
+
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        onClick={onClose}
-        style={{
-          position:'fixed', inset:0, zIndex:200,
-          background:'rgba(0,0,0,.6)',
-          backdropFilter:'blur(2px)',
-        }}
-      />
+    <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#0a0a12 0%,#14101f 100%)',color:'#e8dfc8',padding:'40px 20px',fontFamily:'system-ui,-apple-system,sans-serif'}}>
+      <div style={{maxWidth:900,margin:'0 auto'}}>
+        <AppHeader
+          tiradaActiva="historial"
+          onNavegar={(sec) => onVolver(sec || 'tres')}
+          creditos={creditos}
+          onSolicitarCreditos={null}
+          solicitandoCreditos={false}
+          creditosSolicitados={false}
+          session={session}
+        />
 
-      {/* Panel */}
-      <div style={{
-        position:'fixed', top:0, right:0, bottom:0, zIndex:201,
-        width: 'min(480px, 100vw)',
-        background:'#0d0b17',
-        borderLeft:'1px solid rgba(201,168,76,.15)',
-        display:'flex', flexDirection:'column',
-        animation:'slideIn .3s ease',
-      }}>
-        <style>{`
-          @keyframes slideIn { from { transform:translateX(100%) } to { transform:translateX(0) } }
-        `}</style>
-
-        {/* Header */}
-        <div style={{
-          display:'flex', alignItems:'center', justifyContent:'space-between',
-          padding:'20px 24px',
-          borderBottom:'1px solid rgba(201,168,76,.1)',
-          flexShrink:0,
-        }}>
-          <div>
-            <div style={{ fontSize:8, letterSpacing:5, color:'#c9a84c', marginBottom:4 }}>✦ ✦ ✦</div>
-            <div style={{ fontSize:13, letterSpacing:4, color:'#e8dfc8', fontWeight:300 }}>MIS CONSULTAS</div>
-          </div>
-          <button
-            onClick={onClose}
-            style={{
-              background:'transparent', border:'1px solid rgba(201,168,76,.2)',
-              borderRadius:4, color:'rgba(201,168,76,.5)',
-              fontSize:8, letterSpacing:2, padding:'6px 12px',
-              cursor:'pointer', fontFamily:'inherit',
-            }}
-            onMouseEnter={e => e.currentTarget.style.borderColor='rgba(201,168,76,.5)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor='rgba(201,168,76,.2)'}
-          >
-            CERRAR
-          </button>
+        <div style={{textAlign:'center', marginBottom:24, marginTop:8}}>
+          <h2 style={{fontSize:18,margin:'0 0 6px',color:'#c9a84c',fontWeight:300,letterSpacing:4}}>
+            LECTURAS
+          </h2>
+          <p style={{fontSize:10,color:'#9a8f7a',margin:0,letterSpacing:2}}>
+            Tu historial de consultas
+          </p>
         </div>
 
-        {/* Lista */}
-        <div style={{ overflowY:'auto', flex:1, padding:'16px 24px 32px' }}>
+        <div style={{marginBottom:40}}>
+          {/* Barra de filtros */}
+          <div style={{display:'flex',gap:8,justifyContent:'center',flexWrap:'wrap'}}>
+            <button onClick={() => cambiarFiltro('todas')}
+              style={{
+                background: filtro === 'todas' ? 'rgba(201,168,76,.15)' : 'transparent',
+                border: filtro === 'todas' ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,.3)',
+                borderRadius:4,
+                color: filtro === 'todas' ? '#c9a84c' : 'rgba(201,168,76,.6)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'
+              }}>
+              TODAS
+            </button>
+            <button onClick={() => cambiarFiltro('3cartas')}
+              style={{
+                background: filtro === '3cartas' ? 'rgba(201,168,76,.15)' : 'transparent',
+                border: filtro === '3cartas' ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,.3)',
+                borderRadius:4,
+                color: filtro === '3cartas' ? '#c9a84c' : 'rgba(201,168,76,.6)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'
+              }}>
+              3 CARTAS
+            </button>
+            <button onClick={() => cambiarFiltro('cruz')}
+              style={{
+                background: filtro === 'cruz' ? 'rgba(201,168,76,.15)' : 'transparent',
+                border: filtro === 'cruz' ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,.3)',
+                borderRadius:4,
+                color: filtro === 'cruz' ? '#c9a84c' : 'rgba(201,168,76,.6)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'
+              }}>
+              TIRADA EN CRUZ
+            </button>
+            <button onClick={() => cambiarFiltro('carta_del_dia')}
+              style={{
+                background: filtro === 'carta_del_dia' ? 'rgba(201,168,76,.15)' : 'transparent',
+                border: filtro === 'carta_del_dia' ? '1px solid #c9a84c' : '1px solid rgba(201,168,76,.3)',
+                borderRadius:4,
+                color: filtro === 'carta_del_dia' ? '#c9a84c' : 'rgba(201,168,76,.6)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',cursor:'pointer',fontFamily:'inherit'
+              }}>
+              CARTA DEL DÍA ✦
+            </button>
+          </div>
+        </div>
+
+        {/* Lista de consultas */}
+        <div style={{marginBottom:40}}>
           {loadingData && (
             <div style={{ textAlign:'center', padding:'60px 0', fontSize:12, color:'#555', fontStyle:'italic' }}>
               Cargando lecturas…
             </div>
           )}
 
-          {!loadingData && consultas.length === 0 && (
+          {!loadingData && consultasFiltradas.length === 0 && (
             <div style={{ textAlign:'center', padding:'60px 0' }}>
               <div style={{ fontSize:24, color:'rgba(201,168,76,.2)', marginBottom:16 }}>✦</div>
               <p style={{ fontSize:12, color:'#555', fontStyle:'italic', lineHeight:1.7 }}>
-                Todavía no realizaste ninguna consulta.<br/>
-                Las lecturas quedarán guardadas aquí.
+                {filtro === 'todas'
+                  ? 'Todavía no realizaste ninguna consulta.'
+                  : 'No hay lecturas de este tipo.'}
               </p>
             </div>
           )}
 
-          {!loadingData && consultas.map(c => {
+          {!loadingData && consultasPagina.map(c => {
             const isOpen = expanded === c.id;
             return (
               <div key={c.id} style={{
@@ -336,7 +380,46 @@ export default function HistorialDrawer({ session, onClose }) {
             );
           })}
         </div>
+
+        {/* Paginación */}
+        {!loadingData && totalPaginas > 1 && (
+          <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:16}}>
+            <button
+              onClick={irPaginaAnterior}
+              disabled={pagina === 1}
+              style={{
+                background:'transparent',
+                border:'1px solid rgba(201,168,76,.4)',
+                borderRadius:4,
+                color:'rgba(201,168,76,.7)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',
+                cursor: pagina === 1 ? 'default' : 'pointer',
+                fontFamily:'inherit',
+                opacity: pagina === 1 ? 0.3 : 1
+              }}>
+              ← ANTERIOR
+            </button>
+            <div style={{fontSize:9,color:'rgba(201,168,76,.6)',letterSpacing:1}}>
+              Página {pagina} de {totalPaginas}
+            </div>
+            <button
+              onClick={irPaginaSiguiente}
+              disabled={pagina === totalPaginas}
+              style={{
+                background:'transparent',
+                border:'1px solid rgba(201,168,76,.4)',
+                borderRadius:4,
+                color:'rgba(201,168,76,.7)',
+                fontSize:8,letterSpacing:2,padding:'6px 14px',
+                cursor: pagina === totalPaginas ? 'default' : 'pointer',
+                fontFamily:'inherit',
+                opacity: pagina === totalPaginas ? 0.3 : 1
+              }}>
+              SIGUIENTE →
+            </button>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
