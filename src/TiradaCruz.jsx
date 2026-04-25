@@ -629,7 +629,7 @@ function Btn({ label, onClick, disabled }) {
 }
 
 // ── componente principal ──────────────────────────────────────────────────────
-export default function TiradaCruz({ onBack, onHistorial, creditos, solicitarCreditos, solicitandoCreditos, creditosSolicitados, session }) {
+export default function TiradaCruz({ onBack, onHistorial, creditos, setCreditos, solicitarCreditos, solicitandoCreditos, creditosSolicitados, session }) {
   const [phase, setPhase]     = useState('question');
   const [name, setName]       = useState('');
   const [q, setQ]             = useState('');

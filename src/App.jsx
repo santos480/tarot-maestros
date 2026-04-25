@@ -977,6 +977,7 @@ export default function TarotMaestros() {
     onBack={(sec) => setTiradaActiva(sec || 'tres')}
     onHistorial={() => setTiradaActiva('historial')}
     creditos={creditos}
+    setCreditos={setCreditos}
     solicitarCreditos={solicitarCreditos}
     solicitandoCreditos={solicitandoCreditos}
     creditosSolicitados={creditosSolicitados}
