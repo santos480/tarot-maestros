@@ -775,7 +775,7 @@ setLoading(false);
         tiradaActiva="cruz"
         onNavegar={(sec) => {
           if (sec === 'historial') onHistorial();
-          else onBack();
+          else onBack(sec);
         }}
         creditos={creditos}
         onSolicitarCreditos={solicitarCreditos}

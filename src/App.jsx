@@ -974,7 +974,7 @@ export default function TarotMaestros() {
   if (!authReady) return null;
   if (!session) return <AuthScreen onAuth={s => { setSession(s); setAuthReady(true); }} />;
   if (tiradaActiva === 'cruz') return <TiradaCruz
-    onBack={() => setTiradaActiva('tres')}
+    onBack={(sec) => setTiradaActiva(sec || 'tres')}
     onHistorial={() => setTiradaActiva('historial')}
     creditos={creditos}
     solicitarCreditos={solicitarCreditos}
