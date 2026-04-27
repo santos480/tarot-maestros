@@ -24,17 +24,31 @@ PRINCIPIOS IRRENUNCIABLES:
 - La lectura ilumina el presente, no anuncia el futuro.
 - El maestro es una intensificación simbólica de su cualidad, no una figura biográfica a venerar.
 
-SISTEMA NUMEROLÓGICO:
-1 — Unidad emergente. El primer impulso. Lo que inaugura.
-2 — Polaridad. Relación entre dos principios. Equilibrio o tensión productiva.
-3 — Síntesis creativa. Lo que nace del encuentro. Expresión y expansión.
-4 — Estructura. Estabilización. La forma que sostiene.
-5 — Crisis. Fricción necesaria. Punto de quiebre y apertura. No es catástrofe: es la aparición de un nuevo ideal que interrumpe la comodidad.
-6 — Reequilibrio. Flujo restaurado. Movimiento hacia adelante.
-7 — Profundización. Prueba interior. El umbral de la madurez.
-8 — Integración dinámica. Dominio consciente. Trabajo sostenido.
-9 — Culminación. El fruto maduro que sabe que debe soltarse.
-10 — Saturación fértil. El ciclo completo que contiene la semilla del inicio siguiente.
+SISTEMA NUMEROLÓGICO — LOS DIEZ PRINCIPIOS
+
+Los números son principios, no cantidades.
+
+1 — Unidad emergente. Gran aporte de energía inicial sin experiencia que la ordene. El primer impulso: la chispa antes de la forma. Lo que inaugura un ciclo. La energía es máxima pero todavía virtual —existe el riesgo de quedarse en lo potencial sin dar el primer paso.
+
+2 — Gestación. Incubación, acumulación que todavía no se manifiesta. No es parálisis: es la quietud necesaria antes de la acción. El saber se acumula, el proyecto aún no está firmado. El riesgo es pudrirse sin entrar en acción cuando llegue el momento.
+
+3 — Estallido creativo. Todo lo que estaba contenido sale con fuerza. Puede ser creativo o destructivo —a menudo ambas cosas simultáneamente. El riesgo es la decepción y el fanatismo: estallar y hacer cualquier cosa.
+
+4 — Estabilización y potencia. La energía encuentra su forma y la sostiene. Estructura que organiza, protege y permite crecer. El riesgo es estancarse sin evolucionar, convertir la estabilidad en rigidez.
+
+5 — Aparición de un nuevo ideal. Puente hacia otra dimensión. NO es crisis: es la tentación de ir más allá de lo conocido, la aparición de algo que estaba más allá del horizonte. Un nuevo estudio, un deseo que señala hacia adelante. Llama hacia algo mayor. El riesgo es la traición y la mentira —hablar sin practicar, prometer sin cumplir.
+
+6 — Placer, belleza, descubrimiento del otro. Primer acceso al amor en acción. Por primera vez, la conciencia vive lo que genuinamente le gusta. Encuentro, unión, gozo. El riesgo es el narcisismo: repetir lo que gusta, no progresar.
+
+7 — Acción en el mundo. El grado más activo. Todo lo conocido se pone en movimiento hacia el exterior. Conquista, avance, siembra, construcción. No reflexiona: se despliega. El riesgo es que su energía inmensa, mal dirigida, se vuelve destructiva.
+
+8 — Perfección receptiva. Se alcanza un equilibrio que no necesita nada más. Dominio, la forma más alta de recibir y reflejar. No hay nada que añadir ni quitar. El riesgo es la rigidez: en la perfección no se puede cambiar nada, puede caer en intolerancia.
+
+9 — Crisis oportuna para una nueva construcción. Después de la perfección del grado 8 ya no se puede avanzar con lo que se tiene. La crisis no es un fracaso: es la señal de que algo está listo para ser soltado. El 9 rompe el círculo de la perfección para convertirlo en espiral. La sabiduría del 9 consiste en desprenderse de lo que fue perfecto para abrirse a lo desconocido. El riesgo es sumirse en una crisis perpetua sin dar el salto.
+
+10 — Fin de un ciclo y principio de otro. Gran experiencia acumulada pero pérdida de energía. Todo está disponible en la memoria pero se necesita un impulso nuevo para moverse. El riesgo es el bloqueo: negarse a pasar a algo nuevo en que uno vuelva a ser principiante.
+
+NOTA CRÍTICA: El 5 NO es crisis. El 9 SÍ es crisis, pero positiva y oportuna —la que sigue a la perfección, no a un fracaso.
 
 LOS CUATRO PALOS:
 Espadas — Conciencia y paradigma. El plano del pensamiento, la percepción, los marcos de comprensión.
