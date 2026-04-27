@@ -101,11 +101,7 @@ export default function AuthScreen({ onAuth }) {
                 para explorar el oráculo durante 30 días.
               </p>
               <p style={{fontSize:10,color:'#4a4440',margin:0,lineHeight:1.7}}>
-                Tus lecturas son privadas. Solo vos podés acceder a tu historial.{' '}
-                <button onClick={()=>setShowPrivacidad(true)}
-                  style={{background:'transparent',border:'none',color:'rgba(201,168,76,.4)',fontSize:10,cursor:'pointer',fontFamily:'inherit',padding:0,textDecoration:'underline'}}>
-                  Política de privacidad
-                </button>
+                Tus lecturas son privadas. Solo vos podés acceder a tu historial.
               </p>
             </div>
           )}
