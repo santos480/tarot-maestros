@@ -7,6 +7,7 @@ import AuthScreen from './AuthScreen';
 import HistorialDrawer from './HistorialDrawer';
 import AdminPanel from './components/AdminPanel';
 import AppHeader from './components/AppHeader';
+import SplashScreen from './SplashScreen';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -906,6 +907,7 @@ export default function TarotMaestros() {
   // Capa 1 — disclaimer: se lee desde localStorage para no repetirlo
   // Variable de entorno para desactivar temporalmente (útil para testing)
   const disclaimerDesactivado = import.meta.env.VITE_DISABLE_DISCLAIMER === 'true';
+  const [splashVista, setSplashVista] = useState(() => sessionStorage.getItem('splash_vista') === 'true');
   const [disclaimerAceptado, setDisclaimerAceptado] = useState(
     () => disclaimerDesactivado || localStorage.getItem('disclaimer_aceptado') === 'true'
   );
@@ -973,6 +975,7 @@ export default function TarotMaestros() {
   }, [tiradaActiva]);
 
   // Capa 1 — se muestra antes del login, solo la primera vez
+  if (!splashVista) return <SplashScreen onContinue={() => { sessionStorage.setItem('splash_vista', 'true'); setSplashVista(true); }} />;
   if (!disclaimerAceptado) return <DisclaimerScreen onAceptar={() => setDisclaimerAceptado(true)} />;
   if (typeof window !== 'undefined' && window.location.pathname === '/admin') return <AdminPanel />;
 
