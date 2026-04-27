@@ -721,16 +721,6 @@ function DisclaimerScreen({ onAceptar }) {
           >
             Saber más sobre esta herramienta
           </button>
-          {/* Política de privacidad — link a definir */}
-          <a
-            href="#"
-            onClick={e => e.preventDefault()}
-            style={{color:'rgba(201,168,76,.45)',fontSize:11,fontFamily:'Georgia,serif',textDecoration:'underline'}}
-            onMouseEnter={e=>e.currentTarget.style.color='rgba(201,168,76,.8)'}
-            onMouseLeave={e=>e.currentTarget.style.color='rgba(201,168,76,.45)'}
-          >
-            Política de privacidad
-          </a>
         </div>
       </div>
     </div>
