@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 
 export default function SplashScreen({ onContinue }) {
-  const [showText, setShowText] = useState(false);
-  const [showButton, setShowButton] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [esMobile, setEsMobile] = useState(() => window.innerWidth < 600);
   const videoRef = useRef(null);
 
@@ -13,19 +12,13 @@ export default function SplashScreen({ onContinue }) {
     link.rel = 'stylesheet';
     document.head.appendChild(link);
 
-    // Aparecer texto después de 1.4s
-    const textTimer = setTimeout(() => {
-      setShowText(true);
+    // Aparecer overlay después de 1.4s
+    const timer = setTimeout(() => {
+      setShowOverlay(true);
     }, 1400);
 
-    // Aparecer botón 0.3s después del texto
-    const buttonTimer = setTimeout(() => {
-      setShowButton(true);
-    }, 1700);
-
     return () => {
-      clearTimeout(textTimer);
-      clearTimeout(buttonTimer);
+      clearTimeout(timer);
       document.head.removeChild(link);
     };
   }, []);
@@ -115,20 +108,22 @@ export default function SplashScreen({ onContinue }) {
         pointerEvents: 'none'
       }} />
 
-      {/* Contenido principal */}
+      {/* BLOQUE 1 — Encabezado (arriba, siempre visible) */}
       <div style={{
-        position: 'relative',
-        zIndex: 1,
+        position: 'absolute',
+        top: '48px',
+        left: 0,
+        right: 0,
         textAlign: 'center',
-        padding: '20px',
-        maxWidth: '600px'
+        zIndex: 2,
+        opacity: 1
       }}>
         {/* Rombos dorados */}
         <div style={{
           fontSize: '14px',
           letterSpacing: '12px',
           color: '#c4a263',
-          marginBottom: '24px'
+          marginBottom: '20px'
         }}>
           ✦ ✦ ✦
         </div>
@@ -136,11 +131,12 @@ export default function SplashScreen({ onContinue }) {
         {/* Título */}
         <h1 style={{
           fontFamily: '"Cormorant Garamond", Georgia, serif',
-          fontSize: '42px',
-          fontWeight: 300,
-          letterSpacing: '3px',
+          fontSize: '24px',
+          fontWeight: 500,
+          letterSpacing: '0.28em',
+          textTransform: 'uppercase',
           color: '#e8dec6',
-          margin: '0 0 16px 0',
+          margin: '0 0 12px 0',
           lineHeight: 1.3
         }}>
           Tarot de los Maestros
@@ -148,74 +144,76 @@ export default function SplashScreen({ onContinue }) {
 
         {/* Subtítulo */}
         <p style={{
-          fontSize: '13px',
-          letterSpacing: '4px',
+          fontSize: '9px',
+          letterSpacing: '0.32em',
+          textTransform: 'uppercase',
           color: 'rgba(232,222,198,0.5)',
-          margin: '0 0 60px 0',
-          textTransform: 'uppercase'
+          margin: 0
         }}>
           Arquitectura simbólica de la consciencia
         </p>
-
-        {/* Frase filosófica */}
-        <div style={{
-          position: 'absolute',
-          bottom: '130px',
-          left: 0,
-          right: 0,
-          textAlign: 'center',
-          zIndex: 2,
-          opacity: showText ? 1 : 0,
-          transition: 'opacity 1.4s ease'
-        }}>
-          <div style={{
-            fontFamily: '"Cormorant Garamond", Georgia, serif',
-            fontStyle: 'italic',
-            fontSize: esMobile ? '13px' : '15px',
-            color: 'rgba(232,222,198,0.75)',
-            lineHeight: 1.8,
-            maxWidth: '320px',
-            margin: '0 auto',
-            padding: '0 32px'
-          }}>
-            Nada empieza ni termina. La consciencia se despliega, se reconoce y vuelve a desplegarse. Leer este Tarot es participar conscientemente de ese movimiento.
-          </div>
-        </div>
-
-        {/* Botón Ingresar */}
-        <button
-          onClick={onContinue}
-          style={{
-            opacity: showButton ? 1 : 0,
-            transition: 'opacity 1.2s ease',
-            width: '100%',
-            maxWidth: '300px',
-            padding: '14px 0',
-            background: 'transparent',
-            border: '1px solid #c4a263',
-            borderRadius: '4px',
-            color: '#c4a263',
-            fontSize: '11px',
-            letterSpacing: '4px',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            fontFamily: 'inherit',
-            transition: 'all 0.3s ease'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(196,162,99,0.1)';
-            e.currentTarget.style.borderColor = '#e8dec6';
-            e.currentTarget.style.color = '#e8dec6';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.borderColor = '#c4a263';
-            e.currentTarget.style.color = '#c4a263';
-          }}
-        >
-          Ingresar
-        </button>
       </div>
+
+      {/* BLOQUE 2 — Frase filosófica (centro-bajo) */}
+      <div style={{
+        position: 'absolute',
+        bottom: '140px',
+        left: 0,
+        right: 0,
+        textAlign: 'center',
+        padding: '0 36px',
+        zIndex: 2,
+        opacity: showOverlay ? 1 : 0,
+        transition: 'opacity 1.4s ease'
+      }}>
+        <div style={{
+          fontFamily: '"Cormorant Garamond", Georgia, serif',
+          fontStyle: 'italic',
+          fontSize: '13px',
+          color: 'rgba(232,222,198,0.72)',
+          lineHeight: 1.85,
+          maxWidth: '300px',
+          margin: '0 auto'
+        }}>
+          Nada empieza ni termina. La consciencia se despliega, se reconoce y vuelve a desplegarse. Leer este Tarot es participar conscientemente de ese movimiento.
+        </div>
+      </div>
+
+      {/* BLOQUE 3 — Botón Ingresar (abajo del todo) */}
+      <button
+        onClick={onContinue}
+        style={{
+          position: 'absolute',
+          bottom: '44px',
+          left: '36px',
+          right: '36px',
+          zIndex: 2,
+          opacity: showOverlay ? 1 : 0,
+          transition: 'opacity 1.5s ease 0.3s',
+          padding: '14px 0',
+          background: 'transparent',
+          border: '1px solid #c4a263',
+          borderRadius: '4px',
+          color: '#c4a263',
+          fontSize: '11px',
+          letterSpacing: '0.36em',
+          textTransform: 'uppercase',
+          cursor: 'pointer',
+          fontFamily: '"Cormorant Garamond", Georgia, serif'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(196,162,99,0.1)';
+          e.currentTarget.style.borderColor = '#e8dec6';
+          e.currentTarget.style.color = '#e8dec6';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.borderColor = '#c4a263';
+          e.currentTarget.style.color = '#c4a263';
+        }}
+      >
+        Ingresar
+      </button>
     </div>
   );
 }
