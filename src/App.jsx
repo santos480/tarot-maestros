@@ -8,6 +8,7 @@ import HistorialDrawer from './HistorialDrawer';
 import AdminPanel from './components/AdminPanel';
 import AppHeader from './components/AppHeader';
 import SplashScreen from './SplashScreen';
+import CardBack from './CardBack';
 
 const PC = {
   Espadas: { s:'⚔', c:'#8fc4d8', b:'#0c1a22' },
@@ -487,17 +488,6 @@ const arcanoLabel = (card, upper) => {
   return upper ? `ARCANO ${toMR(card.n)}` : `Arcano ${toMR(card.n)}`;
 };
 
-function CardBack({ idx }) {
-  return (
-    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',background:'linear-gradient(150deg,#14112a 0%,#0a0810 100%)',border:'1px solid rgba(201,168,76,0.35)',borderRadius:12,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10,cursor:'pointer'}}>
-      <div style={{position:'absolute',inset:7,border:'1px solid rgba(201,168,76,0.12)',borderRadius:8}}/>
-      <div style={{fontSize:26,color:'rgba(201,168,76,0.5)'}}>✦</div>
-      <div style={{fontSize:9,letterSpacing:3,color:'rgba(201,168,76,0.35)'}}>CARTA {idx+1}</div>
-      <div style={{fontSize:8,letterSpacing:2,color:'rgba(201,168,76,0.2)',fontStyle:'italic'}}>toca para revelar</div>
-    </div>
-  );
-}
-
 function CardFront({ card }) {
   const c = cfg(card.p);
   return (
@@ -552,7 +542,9 @@ function FlipCard({ card, flipped, onFlip, idx }) {
   return (
     <div style={{width:155,height:270,perspective:1000,flexShrink:0}} onClick={() => !flipped && onFlip(idx)}>
       <div style={{position:'relative',width:'100%',height:'100%',transformStyle:'preserve-3d',transition:'transform 0.65s ease',transform:flipped?'rotateY(180deg)':'rotateY(0)'}}>
-        <CardBack idx={idx}/>
+        <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}>
+          <CardBack size="md" />
+        </div>
         <CardFront card={card}/>
       </div>
     </div>

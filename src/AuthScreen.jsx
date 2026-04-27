@@ -47,7 +47,7 @@ export default function AuthScreen({ onAuth }) {
   };
 
   return (
-    <div style={{minHeight:'100vh',background:'#08080f',color:'#e8dfc8',fontFamily:'Georgia,serif',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'20px'}}>
+    <div style={{minHeight:'100vh',background:'#08080f',color:'#e8dfc8',fontFamily:'var(--font-elegante)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'20px',position:'relative'}}>
       {showPrivacidad && <PrivacidadModal onClose={()=>setShowPrivacidad(false)}/>}
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -122,6 +122,11 @@ export default function AuthScreen({ onAuth }) {
             </button>
           </div>
         </form>
+      </div>
+
+      {/* Frase de cierre */}
+      <div style={{position:'absolute',bottom:24,left:0,right:0,textAlign:'center',color:'rgba(196,162,99,0.35)',fontSize:11,fontStyle:'italic',fontFamily:'var(--font-elegante)',letterSpacing:'0.06em'}}>
+        Cada carta es un espejo.
       </div>
     </div>
   );
