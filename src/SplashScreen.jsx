@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from 'react';
 export default function SplashScreen({ onContinue }) {
   const [showText, setShowText] = useState(false);
   const [showButton, setShowButton] = useState(false);
+  const [esMobile, setEsMobile] = useState(() => window.innerWidth < 600);
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -29,6 +30,15 @@ export default function SplashScreen({ onContinue }) {
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setEsMobile(window.innerWidth < 600);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleVideoEnd = () => {
     const v = videoRef.current;
     if (v) {
@@ -50,25 +60,38 @@ export default function SplashScreen({ onContinue }) {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
-      {/* Video de fondo */}
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        onEnded={handleVideoEnd}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          filter: 'brightness(0.55) contrast(1.05) sepia(0.18)'
-        }}
-      >
-        <source src="/einstein-intro.mp4" type="video/mp4" />
-      </video>
+      {/* Contenedor del video con background */}
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: '#0a0807',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {/* Video de fondo */}
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          onEnded={handleVideoEnd}
+          style={{
+            position: esMobile ? 'absolute' : 'relative',
+            top: esMobile ? 0 : 'auto',
+            left: esMobile ? 0 : 'auto',
+            width: esMobile ? '100%' : 'auto',
+            height: '100%',
+            objectFit: esMobile ? 'cover' : 'contain',
+            filter: 'brightness(0.55) contrast(1.05) sepia(0.18)'
+          }}
+        >
+          <source src="/einstein-intro.mp4" type="video/mp4" />
+        </video>
+      </div>
 
       {/* Overlay radial oscuro */}
       <div style={{
@@ -134,43 +157,28 @@ export default function SplashScreen({ onContinue }) {
           Arquitectura simbólica de la consciencia
         </p>
 
-        {/* Texto con transición (As de Espadas + Einstein + cita) */}
+        {/* Frase filosófica */}
         <div style={{
+          position: 'absolute',
+          bottom: '130px',
+          left: 0,
+          right: 0,
+          textAlign: 'center',
+          zIndex: 2,
           opacity: showText ? 1 : 0,
-          transition: 'opacity 1.2s ease',
-          marginBottom: '40px'
+          transition: 'opacity 1.4s ease'
         }}>
-          {/* As de Espadas */}
-          <div style={{
-            fontSize: '12px',
-            color: '#c4a263',
-            letterSpacing: '2px',
-            marginBottom: '8px'
-          }}>
-            As de Espadas
-          </div>
-
-          {/* Albert Einstein */}
           <div style={{
             fontFamily: '"Cormorant Garamond", Georgia, serif',
-            fontSize: '20px',
             fontStyle: 'italic',
-            color: '#e8dec6',
-            marginBottom: '12px'
+            fontSize: esMobile ? '13px' : '15px',
+            color: 'rgba(232,222,198,0.75)',
+            lineHeight: 1.8,
+            maxWidth: '320px',
+            margin: '0 auto',
+            padding: '0 32px'
           }}>
-            Albert Einstein
-          </div>
-
-          {/* Cita */}
-          <div style={{
-            fontSize: '14px',
-            color: 'rgba(232,222,198,0.5)',
-            fontStyle: 'italic',
-            lineHeight: 1.6,
-            maxWidth: '400px',
-            margin: '0 auto'
-          }}>
-            No acumular datos: reordenar el marco entero.
+            Nada empieza ni termina. La consciencia se despliega, se reconoce y vuelve a desplegarse. Leer este Tarot es participar conscientemente de ese movimiento.
           </div>
         </div>
 
