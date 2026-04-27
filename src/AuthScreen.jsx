@@ -100,9 +100,6 @@ export default function AuthScreen({ onAuth }) {
                 Al registrarte recibís <span style={{color:'#c9a84c'}}>5 créditos</span> gratuitos<br/>
                 para explorar el oráculo durante 30 días.
               </p>
-              <p style={{fontSize:10,color:'#4a4440',margin:0,lineHeight:1.7}}>
-                Tus lecturas son privadas. Solo vos podés acceder a tu historial.
-              </p>
             </div>
           )}
 
