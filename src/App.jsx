@@ -487,17 +487,6 @@ const arcanoLabel = (card, upper) => {
   return upper ? `ARCANO ${toMR(card.n)}` : `Arcano ${toMR(card.n)}`;
 };
 
-function CardBack({ idx }) {
-  return (
-    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',background:'linear-gradient(150deg,#14112a 0%,#0a0810 100%)',border:'1px solid rgba(201,168,76,0.35)',borderRadius:12,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10,cursor:'pointer'}}>
-      <div style={{position:'absolute',inset:7,border:'1px solid rgba(201,168,76,0.12)',borderRadius:8}}/>
-      <div style={{fontSize:26,color:'rgba(201,168,76,0.5)'}}>✦</div>
-      <div style={{fontSize:9,letterSpacing:3,color:'rgba(201,168,76,0.35)'}}>CARTA {idx+1}</div>
-      <div style={{fontSize:8,letterSpacing:2,color:'rgba(201,168,76,0.2)',fontStyle:'italic'}}>toca para revelar</div>
-    </div>
-  );
-}
-
 function CardFront({ card }) {
   const c = cfg(card.p);
   return (
@@ -552,7 +541,32 @@ function FlipCard({ card, flipped, onFlip, idx }) {
   return (
     <div style={{width:155,height:270,perspective:1000,flexShrink:0}} onClick={() => !flipped && onFlip(idx)}>
       <div style={{position:'relative',width:'100%',height:'100%',transformStyle:'preserve-3d',transition:'transform 0.65s ease',transform:flipped?'rotateY(180deg)':'rotateY(0)'}}>
-        <CardBack idx={idx}/>
+        <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',background:'linear-gradient(150deg,#14112a 0%,#0a0810 100%)',border:'1px solid rgba(201,168,76,0.35)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer'}}>
+          <svg width="100%" height="100%" viewBox="0 0 100 160" preserveAspectRatio="xMidYMid slice">
+            <rect x="3" y="3" width="94" height="154" rx="1" fill="none" stroke="#c4a263" strokeWidth="0.8" opacity="0.5"/>
+            <rect x="6" y="6" width="88" height="148" rx="1" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.28"/>
+            <polyline points="6,14 6,6 14,6" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55"/>
+            <polyline points="86,6 94,6 94,14" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55"/>
+            <polyline points="6,146 6,154 14,154" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55"/>
+            <polyline points="86,154 94,154 94,146" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55"/>
+            <line x1="50" y1="80" x2="50" y2="20" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="50" y2="140" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="10" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="90" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="20" y2="30" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="80" y2="30" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="20" y2="130" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <line x1="50" y1="80" x2="80" y2="130" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <circle cx="50" cy="80" r="28" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.25"/>
+            <circle cx="50" cy="80" r="18" fill="none" stroke="#c4a263" strokeWidth="0.4" opacity="0.18"/>
+            <polygon points="50,38 82,80 50,122 18,80" fill="none" stroke="#c4a263" strokeWidth="0.8" opacity="0.65"/>
+            <polygon points="50,52 70,80 50,108 30,80" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.38"/>
+            <circle cx="50" cy="80" r="3.5" fill="#c4a263" opacity="0.88"/>
+            <circle cx="50" cy="80" r="8" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.3"/>
+            <text x="50" y="20" textAnchor="middle" fill="#c4a263" opacity="0.6" fontSize="6">✦  ✦  ✦</text>
+            <text x="50" y="148" textAnchor="middle" fill="#c4a263" opacity="0.6" fontSize="6">✦  ✦  ✦</text>
+          </svg>
+        </div>
         <CardFront card={card}/>
       </div>
     </div>
@@ -673,9 +687,9 @@ function DisclaimerScreen({ onAceptar }) {
       <div style={{maxWidth:540,width:'100%',animation:'fadeUp .5s ease'}}>
         {/* Encabezado */}
         <div style={{textAlign:'center',marginBottom:32}}>
-          <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:12,opacity:.6}}>✦ ✦ ✦</div>
-          <h1 style={{margin:0,fontSize:22,fontWeight:300,letterSpacing:5,color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
-          <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
+          <div style={{fontSize:10,letterSpacing:7,color:'#c9a84c',marginBottom:12,opacity:.7}}>✦ ✦ ✦</div>
+          <h1 style={{margin:0,fontSize:22,fontWeight:500,letterSpacing:4,fontFamily:'var(--font-elegante)',color:'#e8dfc8'}}>TAROT DE LOS MAESTROS</h1>
+          <p style={{margin:'8px 0 0',fontSize:10,letterSpacing:3,color:'#555',fontFamily:'var(--font-elegante)'}}>ARQUITECTURA SIMBÓLICA DE LA CONCIENCIA</p>
         </div>
 
         {/* Texto del disclaimer */}

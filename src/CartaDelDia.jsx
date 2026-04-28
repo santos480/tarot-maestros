@@ -225,11 +225,31 @@ const arcanoLabel = (card, upper) => {
 // ── componentes de carta ──────────────────────────────────────────────────────
 function CardBack() {
   return (
-    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',background:'linear-gradient(150deg,#14112a 0%,#0a0810 100%)',border:'1px solid rgba(201,168,76,0.35)',borderRadius:12,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:10}}>
-      <div style={{position:'absolute',inset:7,border:'1px solid rgba(201,168,76,0.12)',borderRadius:8}}/>
-      <div style={{fontSize:26,color:'rgba(201,168,76,0.5)'}}>✦</div>
-      <div style={{fontSize:9,letterSpacing:3,color:'rgba(201,168,76,0.35)'}}>TU CARTA DE HOY</div>
-      <div style={{fontSize:8,letterSpacing:2,color:'rgba(201,168,76,0.2)',fontStyle:'italic'}}>revelando...</div>
+    <div style={{position:'absolute',width:'100%',height:'100%',backfaceVisibility:'hidden',WebkitBackfaceVisibility:'hidden',background:'linear-gradient(150deg,#14112a 0%,#0a0810 100%)',border:'1px solid rgba(201,168,76,0.35)',borderRadius:12,display:'flex',alignItems:'center',justifyContent:'center'}}>
+      <svg width="100%" height="100%" viewBox="0 0 100 160" preserveAspectRatio="xMidYMid slice">
+        <rect x="3" y="3" width="94" height="154" rx="1" fill="none" stroke="#c4a263" strokeWidth="0.8" opacity="0.5" />
+        <rect x="6" y="6" width="88" height="148" rx="1" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.28" />
+        <polyline points="6,14 6,6 14,6" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55" />
+        <polyline points="86,6 94,6 94,14" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55" />
+        <polyline points="6,146 6,154 14,154" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55" />
+        <polyline points="86,154 94,154 94,146" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.55" />
+        <line x1="50" y1="20" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="50" y1="140" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="10" y1="80" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="90" y1="80" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="20" y1="30" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="80" y1="30" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="20" y1="130" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <line x1="80" y1="130" x2="50" y2="80" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <circle cx="50" cy="80" r="28" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.25" />
+        <circle cx="50" cy="80" r="18" fill="none" stroke="#c4a263" strokeWidth="0.4" opacity="0.18" />
+        <polygon points="50,38 82,80 50,122 18,80" fill="none" stroke="#c4a263" strokeWidth="0.8" opacity="0.65" />
+        <polygon points="50,52 70,80 50,108 30,80" fill="none" stroke="#c4a263" strokeWidth="0.6" opacity="0.38" />
+        <circle cx="50" cy="80" r="3.5" fill="#c4a263" opacity="0.88" />
+        <circle cx="50" cy="80" r="8" fill="none" stroke="#c4a263" strokeWidth="0.5" opacity="0.3" />
+        <text x="50" y="20" textAnchor="middle" fill="#c4a263" opacity="0.6" fontSize="6">✦  ✦  ✦</text>
+        <text x="50" y="148" textAnchor="middle" fill="#c4a263" opacity="0.6" fontSize="6">✦  ✦  ✦</text>
+      </svg>
     </div>
   );
 }
@@ -422,7 +442,7 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
   // ── pantalla inicial: selección de dimensión ─────────────────────────────────
   if (!card) {
     return (
-      <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#0a0a12 0%,#14101f 100%)',color:'#e8dfc8',padding:'40px 20px',fontFamily:'system-ui,-apple-system,sans-serif'}}>
+      <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#0a0a12 0%,#14101f 100%)',color:'#e8dfc8',padding:'40px 20px',fontFamily:'var(--font-elegante)'}}>
         <div style={{maxWidth:600,margin:'0 auto'}}>
           <AppHeader
             tiradaActiva="cartadeldia"
@@ -495,7 +515,7 @@ Nombre del consultante: ${nombre || 'no proporcionado'}`;
 
   // ── pantalla de resultado ────────────────────────────────────────────────────
   return (
-    <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#0a0a12 0%,#14101f 100%)',color:'#e8dfc8',padding:'40px 20px',fontFamily:'system-ui,-apple-system,sans-serif'}}>
+    <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#0a0a12 0%,#14101f 100%)',color:'#e8dfc8',padding:'40px 20px',fontFamily:'var(--font-elegante)'}}>
       <div style={{maxWidth:700,margin:'0 auto'}}>
         {/* Header */}
         <div style={{marginBottom:30,textAlign:'center'}}>

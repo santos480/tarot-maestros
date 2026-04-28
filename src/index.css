@@ -1,0 +1,7 @@
+:root {
+  --font-elegante: 'Cormorant Garamond', Georgia, serif;
+}
+
+body {
+  font-family: var(--font-elegante);
+}
